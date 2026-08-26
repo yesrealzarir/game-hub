@@ -1,482 +1,268 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#08090d">
-    <title>GameHub — Play & Compete</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>GAMEZONE</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <!-- =========================
-         APP
+         MAIN MENU
     ========================== -->
 
-    <div id="app">
+    <div id="menuScreen" class="screen">
 
-        <!-- NAVBAR -->
         <nav class="navbar">
             <div class="brand">
-                <span class="brand-icon">◆</span>
-                GAME<span>HUB</span>
+                GAME<span>ZONE</span>
             </div>
 
             <div class="nav-right">
-                <div class="player-chip">
-                    <span class="online-dot"></span>
-                    <span id="playerNameDisplay">Player</span>
-                </div>
-
-                <button id="changeNameBtn" class="small-btn">
-                    Change Name
+                <button id="leaderboardBtn" class="nav-btn">
+                    Leaderboard
                 </button>
             </div>
         </nav>
 
-
-        <!-- =========================
-             HOME SCREEN
-        ========================== -->
-
-        <main id="homeScreen" class="screen active">
+        <main class="menu">
 
             <section class="hero">
-                <div class="hero-glow glow-1"></div>
-                <div class="hero-glow glow-2"></div>
-
-                <div class="hero-content">
-
-                    <div class="eyebrow">
-                        <span></span>
-                        ARCADE ONLINE
-                    </div>
-
-                    <h1>
-                        Play.
-                        <strong>Compete.</strong>
-                        Repeat.
-                    </h1>
-
-                    <p>
-                        Pick a game, beat your high score,
-                        and climb your local leaderboard.
-                    </p>
-
-                    <div class="hero-stats">
-                        <div>
-                            <strong id="gameCount">3</strong>
-                            <span>GAMES</span>
-                        </div>
-
-                        <div>
-                            <strong>∞</strong>
-                            <span>ATTEMPTS</span>
-                        </div>
-
-                        <div>
-                            <strong>100%</strong>
-                            <span>FREE</span>
-                        </div>
-                    </div>
-
+                <div class="hero-badge">
+                    🎮 ONLINE GAME HUB
                 </div>
+
+                <h1>
+                    PLAY.<br>
+                    <span>COMPETE.</span><br>
+                    DOMINATE.
+                </h1>
+
+                <p>
+                    Ekta website, onek gula game.
+                    <br>
+                    Bondhuder sathe compete koro ar leaderboard-e naam uthao.
+                </p>
+
+                <button id="letsPlayBtn" class="primary-btn">
+                    LET'S PLAY
+                    <span>→</span>
+                </button>
             </section>
-
-
-            <!-- GAME CARDS -->
 
             <section class="games-section">
 
-                <div class="section-header">
+                <div class="section-title">
                     <div>
-                        <span class="section-label">THE ARCADE</span>
-                        <h2>Choose your game</h2>
+                        <small>CHOOSE YOUR GAME</small>
+                        <h2>Games</h2>
                     </div>
 
-                    <span class="section-note">
-                        Works on PC & mobile
+                    <span id="playerDisplay">
+                        PLAYER: GUEST
                     </span>
                 </div>
-
 
                 <div class="games-grid">
 
-                    <!-- CLICK RUSH -->
-                    <article class="game-card purple-card">
-
+                    <article class="game-card blue" data-game="reaction">
                         <div class="game-icon">⚡</div>
 
                         <div class="game-info">
-                            <span class="game-number">01</span>
-
-                            <h3>Click Rush</h3>
-
+                            <small>01 • SPEED</small>
+                            <h3>Reaction Rush</h3>
                             <p>
-                                Click as many times as possible
-                                before the timer runs out.
+                                Screen green hole click koro.
+                                Dekhi koto fast reaction dite paro.
                             </p>
-
-                            <div class="game-tags">
-                                <span>REACTION</span>
-                                <span>30 SEC</span>
-                            </div>
                         </div>
 
-                        <button
-                            class="play-btn"
-                            data-game="clickrush"
-                        >
-                            PLAY
-                            <span>→</span>
+                        <button class="play-game-btn" data-game="reaction">
+                            PLAY →
                         </button>
-
                     </article>
 
 
-                    <!-- SNAKE -->
-                    <article class="game-card green-card">
-
-                        <div class="game-icon">🐍</div>
+                    <article class="game-card purple" data-game="tap">
+                        <div class="game-icon">👆</div>
 
                         <div class="game-info">
-                            <span class="game-number">02</span>
-
-                            <h3>Snake</h3>
-
+                            <small>02 • SPEED</small>
+                            <h3>Tap Frenzy</h3>
                             <p>
-                                Eat the food, grow longer,
-                                and don't hit yourself.
+                                10 seconds-e joto beshi tap
+                                korte paro, toto beshi score.
                             </p>
-
-                            <div class="game-tags">
-                                <span>ARCADE</span>
-                                <span>CLASSIC</span>
-                            </div>
                         </div>
 
-                        <button
-                            class="play-btn"
-                            data-game="snake"
-                        >
-                            PLAY
-                            <span>→</span>
+                        <button class="play-game-btn" data-game="tap">
+                            PLAY →
                         </button>
-
                     </article>
 
 
-                    <!-- DODGE -->
-                    <article class="game-card red-card">
-
-                        <div class="game-icon">☄</div>
+                    <article class="game-card orange" data-game="memory">
+                        <div class="game-icon">🧠</div>
 
                         <div class="game-info">
-                            <span class="game-number">03</span>
-
-                            <h3>Dodge</h3>
-
+                            <small>03 • MEMORY</small>
+                            <h3>Memory Match</h3>
                             <p>
-                                Dodge falling blocks for as long
-                                as you can.
+                                Same emoji pair khuje ber koro
+                                minimum moves-e.
                             </p>
-
-                            <div class="game-tags">
-                                <span>SURVIVAL</span>
-                                <span>ENDLESS</span>
-                            </div>
                         </div>
 
-                        <button
-                            class="play-btn"
-                            data-game="dodge"
-                        >
-                            PLAY
-                            <span>→</span>
+                        <button class="play-game-btn" data-game="memory">
+                            PLAY →
                         </button>
+                    </article>
 
+
+                    <article class="game-card green" data-game="dodger">
+                        <div class="game-icon">☄️</div>
+
+                        <div class="game-info">
+                            <small>04 • SURVIVAL</small>
+                            <h3>Block Dodger</h3>
+                            <p>
+                                Falling blocks avoid koro
+                                joto khon possible.
+                            </p>
+                        </div>
+
+                        <button class="play-game-btn" data-game="dodger">
+                            PLAY →
+                        </button>
                     </article>
 
                 </div>
-
-            </section>
-
-
-            <!-- LEADERBOARD -->
-
-            <section class="leaderboard-section">
-
-                <div class="section-header">
-                    <div>
-                        <span class="section-label">LOCAL SCORES</span>
-                        <h2>Leaderboard</h2>
-                    </div>
-
-                    <button
-                        id="clearScoresBtn"
-                        class="small-btn danger-btn"
-                    >
-                        Clear Scores
-                    </button>
-                </div>
-
-                <div class="leaderboard">
-
-                    <div class="leaderboard-head">
-                        <span>#</span>
-                        <span>PLAYER</span>
-                        <span>GAME</span>
-                        <span>SCORE</span>
-                    </div>
-
-                    <div id="leaderboardBody">
-                        <!-- generated by JS -->
-                    </div>
-
-                </div>
-
-                <p class="leaderboard-note">
-                    Scores are saved only on this device/browser.
-                </p>
 
             </section>
 
         </main>
 
+        <footer>
+            GAMEZONE • Built for the squad
+        </footer>
 
-        <!-- =========================
-             GAME SCREEN
-        ========================== -->
+    </div>
 
-        <main id="gameScreen" class="game-screen">
 
-            <div class="game-topbar">
+    <!-- =========================
+         NAME MODAL
+    ========================== -->
 
-                <button id="backBtn" class="back-btn">
-                    ← Menu
-                </button>
+    <div id="nameModal" class="modal hidden">
 
-                <div class="game-title-area">
-                    <span id="activeGameLabel">GAME</span>
-                    <h2 id="activeGameTitle">Game</h2>
-                </div>
+        <div class="modal-card">
 
-                <div class="score-box">
-                    <span>SCORE</span>
-                    <strong id="scoreDisplay">0</strong>
-                </div>
+            <button id="closeNameModal" class="close-btn">
+                ×
+            </button>
 
+            <div class="modal-icon">
+                🎮
             </div>
 
+            <small>PLAYER SETUP</small>
 
-            <!-- CLICK RUSH -->
+            <h2>
+                What's your name?
+            </h2>
 
-            <section id="clickrushGame" class="game-container">
+            <p>
+                Naam dao, tarpor game start koro.
+            </p>
 
-                <div class="game-hud">
-                    <div>
-                        <span>TIME</span>
-                        <strong id="clickTime">30</strong>
-                    </div>
+            <input
+                id="playerNameInput"
+                type="text"
+                maxlength="16"
+                placeholder="Enter your name..."
+                autocomplete="off"
+            >
 
-                    <div>
-                        <span>CLICKS</span>
-                        <strong id="clickScore">0</strong>
-                    </div>
-                </div>
+            <button id="startPlayerBtn" class="primary-btn full">
+                CONTINUE →
+            </button>
 
-                <div class="click-area">
-
-                    <div class="click-message" id="clickMessage">
-                        READY?
-                    </div>
-
-                    <button
-                        id="bigClickButton"
-                        class="big-click-button"
-                    >
-                        TAP
-                    </button>
-
-                    <p>
-                        Click / tap as fast as you can.
-                    </p>
-
-                </div>
-
-            </section>
-
-
-            <!-- SNAKE -->
-
-            <section id="snakeGame" class="game-container">
-
-                <div class="game-hud">
-                    <div>
-                        <span>SCORE</span>
-                        <strong id="snakeScore">0</strong>
-                    </div>
-
-                    <div>
-                        <span>BEST</span>
-                        <strong id="snakeBest">0</strong>
-                    </div>
-                </div>
-
-                <div class="canvas-wrapper">
-                    <canvas
-                        id="snakeCanvas"
-                        width="500"
-                        height="500"
-                    ></canvas>
-                </div>
-
-                <div class="mobile-controls snake-controls">
-
-                    <button data-dir="up">▲</button>
-
-                    <div>
-                        <button data-dir="left">◀</button>
-                        <button data-dir="down">▼</button>
-                        <button data-dir="right">▶</button>
-                    </div>
-
-                </div>
-
-                <p class="controls-hint">
-                    PC: Arrow Keys / WASD
-                </p>
-
-            </section>
-
-
-            <!-- DODGE -->
-
-            <section id="dodgeGame" class="game-container">
-
-                <div class="game-hud">
-                    <div>
-                        <span>SCORE</span>
-                        <strong id="dodgeScore">0</strong>
-                    </div>
-
-                    <div>
-                        <span>BEST</span>
-                        <strong id="dodgeBest">0</strong>
-                    </div>
-                </div>
-
-                <div class="canvas-wrapper">
-                    <canvas
-                        id="dodgeCanvas"
-                        width="500"
-                        height="600"
-                    ></canvas>
-                </div>
-
-                <div class="mobile-controls dodge-controls">
-
-                    <button id="dodgeLeft">◀</button>
-                    <button id="dodgeRight">▶</button>
-
-                </div>
-
-                <p class="controls-hint">
-                    PC: Arrow Keys / A & D
-                </p>
-
-            </section>
-
-
-            <!-- GAME OVER -->
-
-            <div id="gameOverOverlay" class="game-over hidden">
-
-                <div class="game-over-card">
-
-                    <span class="game-over-label">
-                        GAME OVER
-                    </span>
-
-                    <h2 id="gameOverTitle">
-                        Nice run.
-                    </h2>
-
-                    <div class="final-score">
-                        <span>FINAL SCORE</span>
-                        <strong id="finalScore">0</strong>
-                    </div>
-
-                    <p id="gameOverMessage">
-                        Good game.
-                    </p>
-
-                    <div class="game-over-actions">
-
-                        <button
-                            id="retryBtn"
-                            class="primary-btn"
-                        >
-                            PLAY AGAIN
-                        </button>
-
-                        <button
-                            id="overlayMenuBtn"
-                            class="secondary-btn"
-                        >
-                            MENU
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </main>
-
-
-        <!-- NAME MODAL -->
-
-        <div id="nameModal" class="modal">
-
-            <div class="modal-card">
-
-                <span class="modal-label">
-                    WELCOME TO GAMEHUB
-                </span>
-
-                <h2>What's your name?</h2>
-
-                <p>
-                    Your name will appear on the local leaderboard.
-                </p>
-
-                <input
-                    id="playerNameInput"
-                    type="text"
-                    maxlength="18"
-                    placeholder="Enter your name"
-                    autocomplete="off"
-                >
-
-                <button id="saveNameBtn" class="primary-btn">
-                    LET'S PLAY →
-                </button>
-
-            </div>
+            <div id="nameError" class="form-error"></div>
 
         </div>
 
+    </div>
 
-        <!-- TOAST -->
 
-        <div id="toast" class="toast"></div>
+    <!-- =========================
+         GAME SCREEN
+    ========================== -->
+
+    <div id="gameScreen" class="screen hidden">
+
+        <nav class="game-navbar">
+
+            <button id="backMenuBtn" class="nav-btn">
+                ← MENU
+            </button>
+
+            <div id="gameTitle">
+                GAME
+            </div>
+
+            <div id="gameScore">
+                SCORE: 0
+            </div>
+
+        </nav>
+
+        <main id="gameContainer" class="game-container">
+        </main>
 
     </div>
+
+
+    <!-- =========================
+         LEADERBOARD
+    ========================== -->
+
+    <div id="leaderboardModal" class="modal hidden">
+
+        <div class="modal-card leaderboard-card">
+
+            <button id="closeLeaderboard" class="close-btn">
+                ×
+            </button>
+
+            <small>LOCAL RANKINGS</small>
+
+            <h2>
+                Leaderboard
+            </h2>
+
+            <p>
+                Ei device-er best scores.
+            </p>
+
+            <div id="leaderboardList" class="leaderboard-list">
+            </div>
+
+            <button id="clearLeaderboard" class="danger-btn">
+                Clear Scores
+            </button>
+
+        </div>
+
+    </div>
+
 
     <script src="script.js"></script>
 
 </body>
 </html>
+```
