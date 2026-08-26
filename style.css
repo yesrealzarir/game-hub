@@ -1,1333 +1,995 @@
-/* =========================================
-   VOID ARCADE
-   No Supabase
-   LocalStorage only
-========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
+:root {
+    --bg: #07070a;
+    --surface: #0e0e14;
+    --surface2: #13131b;
+    --text: #f5f5f7;
+    --muted: #888894;
+    --border: rgba(255,255,255,.09);
 
-/* =========================================
-   PLAYER
-========================================= */
-
-let playerName = localStorage.getItem("void_player");
-
-const nameModal = document.getElementById("nameModal");
-const playerInput = document.getElementById("playerInput");
-const savePlayer = document.getElementById("savePlayer");
-const playerDisplay = document.getElementById("playerDisplay");
-const changeName = document.getElementById("changeName");
-
-function updatePlayer() {
-
-    if (!playerName) {
-        nameModal.classList.remove("hidden");
-    } else {
-        nameModal.classList.add("hidden");
-        playerDisplay.textContent = playerName;
-    }
+    --purple: #9b6cff;
+    --blue: #4d8cff;
+    --green: #45d483;
+    --red: #ff5368;
 }
 
-savePlayer.addEventListener("click", savePlayerName);
-
-playerInput.addEventListener("keydown", function(e) {
-
-    if (e.key === "Enter") {
-        savePlayerName();
-    }
-
-});
-
-function savePlayerName() {
-
-    const value = playerInput.value.trim();
-
-    if (!value) {
-        playerInput.focus();
-        return;
-    }
-
-    playerName = value.slice(0, 16);
-
-    localStorage.setItem(
-        "void_player",
-        playerName
-    );
-
-    updatePlayer();
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
-changeName.addEventListener("click", function() {
+html {
+    scroll-behavior: smooth;
+}
 
-    playerInput.value = playerName || "";
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 50% -20%, rgba(130,80,255,.12), transparent 35%),
+        var(--bg);
+    color: var(--text);
+    font-family: Inter, sans-serif;
+}
 
-    nameModal.classList.remove("hidden");
+button,
+input {
+    font: inherit;
+}
 
-    setTimeout(() => {
-        playerInput.focus();
-    }, 100);
+button {
+    cursor: pointer;
+}
 
-});
+.hidden {
+    display: none !important;
+}
 
-
-updatePlayer();
-
-
-/* =========================================
-   GAME MODAL
-========================================= */
-
-const modal = document.getElementById("gameModal");
-const closeGame = document.getElementById("closeGame");
-const gameContent = document.getElementById("gameContent");
-const gameTitle = document.getElementById("gameTitle");
-const gameCategory = document.getElementById("gameCategory");
-const gameStats = document.getElementById("gameStats");
-
-document.querySelectorAll(".game-card").forEach(card => {
-
-    card.addEventListener("click", () => {
-
-        openGame(card.dataset.game);
-
-    });
-
-});
-
-
-closeGame.addEventListener("click", closeGameWindow);
-
-document.querySelector(".modal-backdrop").addEventListener(
-    "click",
-    closeGameWindow
-);
-
-function closeGameWindow() {
-
-    modal.classList.add("hidden");
-
-    gameContent.innerHTML = "";
-    gameStats.innerHTML = "";
-
-    clearAllGameTimers();
+.hidden-game {
+    display: none !important;
 }
 
 
-function openGame(game) {
+/* NAV */
 
-    modal.classList.remove("hidden");
+.navbar {
+    height: 70px;
+    padding: 0 clamp(18px, 5vw, 70px);
 
-    gameContent.innerHTML = "";
-    gameStats.innerHTML = "";
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-    if (game === "snake") {
+    position: sticky;
+    top: 0;
+    z-index: 100;
 
-        gameCategory.textContent = "ARCADE / 01";
-        gameTitle.textContent = "Snake";
+    background: rgba(7,7,10,.78);
+    backdrop-filter: blur(20px);
 
-        startSnake();
+    border-bottom: 1px solid var(--border);
+}
 
-    }
+.brand {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -1px;
+}
 
-    if (game === "tictactoe") {
+.brand-icon {
+    color: var(--purple);
+    margin-right: 7px;
+}
 
-        gameCategory.textContent = "ARCADE / 02";
-        gameTitle.textContent = "Tic-Tac-Toe";
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-        startTicTacToe();
+#playerDisplay {
+    color: #9b9ba5;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
 
-    }
+.nav-right button,
+.back-btn {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.045);
+    color: #ddd;
+    padding: 8px 12px;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 700;
+}
 
-    if (game === "reaction") {
-
-        gameCategory.textContent = "ARCADE / 03";
-        gameTitle.textContent = "Reaction Test";
-
-        startReaction();
-
-    }
-
-    if (game === "clickrush") {
-
-        gameCategory.textContent = "ARCADE / 04";
-        gameTitle.textContent = "Click Rush";
-
-        startClickRush();
-
-    }
-
-    if (game === "memory") {
-
-        gameCategory.textContent = "ARCADE / 05";
-        gameTitle.textContent = "Memory Match";
-
-        startMemory();
-
-    }
-
+.nav-right button:hover,
+.back-btn:hover {
+    background: rgba(255,255,255,.09);
 }
 
 
-/* =========================================
-   TIMER CLEANUP
-========================================= */
+/* SCREENS */
 
-let timers = [];
-
-function addTimer(timer) {
-    timers.push(timer);
-    return timer;
+.screen {
+    width: min(1400px, 100%);
+    margin: auto;
+    min-height: calc(100vh - 70px);
 }
 
-function clearAllGameTimers() {
-
-    timers.forEach(timer => {
-
-        clearTimeout(timer);
-        clearInterval(timer);
-
-    });
-
-    timers = [];
+.hero {
+    min-height: 650px;
+    padding: 80px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
+.hero-badge {
+    display: inline-block;
+    padding: 7px 12px;
 
-/* =========================================
-   LEADERBOARD
-========================================= */
+    border: 1px solid var(--border);
+    border-radius: 999px;
 
-const leaderboard = document.getElementById("leaderboard");
+    background: rgba(255,255,255,.035);
+    color: #8b8b97;
 
-let currentBoard = "snake";
-
-document.querySelectorAll(".leader-tab").forEach(tab => {
-
-    tab.addEventListener("click", function() {
-
-        document.querySelectorAll(".leader-tab")
-            .forEach(x => x.classList.remove("active"));
-
-        this.classList.add("active");
-
-        currentBoard = this.dataset.board;
-
-        renderLeaderboard();
-
-    });
-
-});
-
-
-function getScores(game) {
-
-    return JSON.parse(
-        localStorage.getItem(
-            "void_scores_" + game
-        ) || "[]"
-    );
-
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 2px;
 }
 
+.hero h1 {
+    margin-top: 25px;
 
-function saveScore(game, score) {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(70px, 13vw, 170px);
+    line-height: .82;
+    letter-spacing: -8px;
+}
 
-    if (!playerName) return;
+.hero h1 span {
+    color: var(--purple);
+    text-shadow: 0 0 70px rgba(155,108,255,.3);
+}
 
-    let scores = getScores(game);
+.hero p {
+    max-width: 520px;
+    margin: 30px auto;
 
-    scores.push({
-        name: playerName,
-        score: score
-    });
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
 
-    scores.sort((a, b) => b.score - a.score);
-
-    scores = scores.slice(0, 10);
-
-    localStorage.setItem(
-        "void_scores_" + game,
-        JSON.stringify(scores)
-    );
-
-    renderLeaderboard();
-
+.hero-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 
-function renderLeaderboard() {
+/* BUTTONS */
 
-    let scores = getScores(currentBoard);
+.primary-btn,
+.secondary-btn {
+    border-radius: 12px;
+    padding: 13px 18px;
+    font-weight: 800;
+    font-size: 12px;
+    transition: .2s ease;
+}
 
-    if (!scores.length) {
+.primary-btn {
+    border: 0;
+    color: #09090c;
+    background: #f5f5f7;
+}
 
-        leaderboard.innerHTML = `
-            <div class="leader-row">
-                <div></div>
-                <div class="leader-user">
-                    No scores yet. Be the first.
-                </div>
-                <div>🏆</div>
-            </div>
-        `;
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(255,255,255,.12);
+}
 
-        return;
-    }
+.secondary-btn {
+    border: 1px solid var(--border);
+    color: white;
+    background: rgba(255,255,255,.045);
+}
 
-    leaderboard.innerHTML = scores.map((entry, index) => {
-
-        let rankClass = "";
-
-        if (index === 0) rankClass = "first";
-        if (index === 1) rankClass = "second";
-        if (index === 2) rankClass = "third";
-
-        const isYou =
-            entry.name === playerName;
-
-        return `
-            <div class="leader-row">
-
-                <div class="rank ${rankClass}">
-                    #${index + 1}
-                </div>
-
-                <div class="leader-user">
-                    ${escapeHTML(entry.name)}
-
-                    ${isYou
-                        ? `<span class="you">YOU</span>`
-                        : ""}
-                </div>
-
-                <div class="leader-score">
-                    ${entry.score}
-                </div>
-
-            </div>
-        `;
-
-    }).join("");
-
+.secondary-btn:hover {
+    background: rgba(255,255,255,.09);
 }
 
 
-function escapeHTML(text) {
+/* GAMES */
 
-    const div = document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
-
+.games-section {
+    padding: 50px clamp(18px, 5vw, 70px) 100px;
 }
 
-renderLeaderboard();
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 28px;
+}
+
+.section-head small {
+    color: #73737e;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.section-head h2 {
+    margin-top: 5px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 48px;
+    letter-spacing: -2px;
+}
+
+#gameCount {
+    color: #656570;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 17px;
+}
+
+.game-card {
+    --accent: var(--purple);
+    --rgb: 155,108,255;
+
+    position: relative;
+    overflow: hidden;
+
+    padding: 28px;
+
+    border: 1px solid rgba(var(--rgb),.18);
+    border-radius: 25px;
+
+    background:
+        radial-gradient(circle at 100% 0%, rgba(var(--rgb),.12), transparent 40%),
+        linear-gradient(145deg, #121219, #0b0b10);
+
+    transition: .25s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(var(--rgb),.38);
+}
+
+.game-card.purple {
+    --accent: var(--purple);
+    --rgb: 155,108,255;
+}
+
+.game-card.blue {
+    --accent: var(--blue);
+    --rgb: 77,140,255;
+}
+
+.game-card.green {
+    --accent: var(--green);
+    --rgb: 69,212,131;
+}
+
+.game-card.red {
+    --accent: var(--red);
+    --rgb: 255,83,104;
+}
+
+.game-icon {
+    width: 58px;
+    height: 58px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 17px;
+
+    color: var(--accent);
+    background: rgba(var(--rgb),.1);
+    border: 1px solid rgba(var(--rgb),.22);
+
+    font-size: 25px;
+}
+
+.game-type {
+    display: block;
+    margin-top: 24px;
+
+    color: var(--accent);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
 
+.game-info h3 {
+    margin-top: 7px;
 
-/* =========================================
-   SNAKE
-========================================= */
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 29px;
+}
 
-let snakeInterval = null;
+.game-info p {
+    max-width: 500px;
+    margin-top: 10px;
 
-function startSnake() {
+    color: #888894;
+    font-size: 13px;
+    line-height: 1.7;
+}
 
-    clearAllGameTimers();
+.game-btn {
+    margin-top: 22px;
 
-    let snake = [
-        {x: 10, y: 10},
-        {x: 9, y: 10},
-        {x: 8, y: 10}
-    ];
+    width: 100%;
 
-    let direction = {
-        x: 1,
-        y: 0
-    };
+    padding: 11px;
 
-    let nextDirection = {
-        x: 1,
-        y: 0
-    };
+    border-radius: 10px;
+    border: 1px solid rgba(var(--rgb),.22);
 
-    let food = randomFood();
+    color: var(--accent);
+    background: rgba(var(--rgb),.06);
 
-    let score = 0;
+    font-size: 11px;
+    font-weight: 900;
+}
 
-    let running = true;
-
-    gameStats.innerHTML = `
-        <span>SCORE <strong id="snakeScore">0</strong></span>
-        <span>BEST <strong>${getBest("snake")}</strong></span>
-    `;
-
-    gameContent.innerHTML = `
-
-        <div class="snake-board" id="snakeBoard"></div>
-
-        <div class="mobile-controls">
-
-            <button class="control-btn up" data-dir="up">↑</button>
-
-            <button class="control-btn left" data-dir="left">←</button>
-
-            <button class="control-btn down" data-dir="down">↓</button>
-
-            <button class="control-btn right" data-dir="right">→</button>
-
-        </div>
-
-        <button class="game-action" id="snakeRestart">
-            Restart
-        </button>
-    `;
-
-    const board =
-        document.getElementById("snakeBoard");
-
-    function render() {
-
-        board.innerHTML = "";
-
-        for (let y = 0; y < 20; y++) {
-
-            for (let x = 0; x < 20; x++) {
-
-                const cell =
-                    document.createElement("div");
-
-                cell.className = "snake-cell";
-
-                const snakeIndex =
-                    snake.findIndex(
-                        part =>
-                            part.x === x &&
-                            part.y === y
-                    );
-
-                if (snakeIndex === 0) {
-                    cell.classList.add("snake-head");
-                }
-
-                if (snakeIndex > 0) {
-                    cell.classList.add("snake");
-                }
-
-                if (
-                    food.x === x &&
-                    food.y === y
-                ) {
-                    cell.classList.add("food");
-                }
-
-                board.appendChild(cell);
-
-            }
-
-        }
-
-        document.getElementById(
-            "snakeScore"
-        ).textContent = score;
-
-    }
-
-    function move() {
-
-        if (!running) return;
-
-        direction = nextDirection;
-
-        const head = {
-            x: snake[0].x + direction.x,
-            y: snake[0].y + direction.y
-        };
-
-        const hitWall =
-            head.x < 0 ||
-            head.x >= 20 ||
-            head.y < 0 ||
-            head.y >= 20;
-
-        const hitSelf =
-            snake.some(
-                part =>
-                    part.x === head.x &&
-                    part.y === head.y
-            );
-
-        if (hitWall || hitSelf) {
-
-            running = false;
-
-            clearInterval(snakeInterval);
-
-            saveScore("snake", score);
-
-            showGameMessage(
-                "Game Over",
-                `Score: ${score}`,
-                "Play Again",
-                startSnake
-            );
-
-            return;
-        }
-
-        snake.unshift(head);
-
-        if (
-            head.x === food.x &&
-            head.y === food.y
-        ) {
-
-            score++;
-
-            food = randomFood();
-
-        } else {
-
-            snake.pop();
-
-        }
-
-        render();
-
-    }
-
-    snakeInterval = setInterval(
-        move,
-        Math.max(70, 145 - score * 3)
-    );
-
-    document.querySelectorAll(
-        ".control-btn"
-    ).forEach(btn => {
-
-        btn.addEventListener(
-            "click",
-            () => changeSnakeDirection(
-                btn.dataset.dir
-            )
-        );
-
-    });
-
-    document.getElementById(
-        "snakeRestart"
-    ).addEventListener(
-        "click",
-        startSnake
-    );
-
-    document.onkeydown = function(e) {
-
-        if (
-            ["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"]
-            .includes(e.key)
-        ) {
-
-            e.preventDefault();
-
-        }
-
-        if (e.key === "ArrowUp" || e.key.toLowerCase() === "w")
-            changeSnakeDirection("up");
-
-        if (e.key === "ArrowDown" || e.key.toLowerCase() === "s")
-            changeSnakeDirection("down");
-
-        if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a")
-            changeSnakeDirection("left");
-
-        if (e.key === "ArrowRight" || e.key.toLowerCase() === "d")
-            changeSnakeDirection("right");
-
-    };
-
-    function changeSnakeDirection(dir) {
-
-        if (dir === "up" && direction.y !== 1)
-            nextDirection = {x:0,y:-1};
-
-        if (dir === "down" && direction.y !== -1)
-            nextDirection = {x:0,y:1};
-
-        if (dir === "left" && direction.x !== 1)
-            nextDirection = {x:-1,y:0};
-
-        if (dir === "right" && direction.x !== -1)
-            nextDirection = {x:1,y:0};
-
-    }
-
-    render();
-
-    function randomFood() {
-
-        let position;
-
-        do {
-
-            position = {
-                x: Math.floor(Math.random() * 20),
-                y: Math.floor(Math.random() * 20)
-            };
-
-        } while (
-            snake.some(
-                part =>
-                    part.x === position.x &&
-                    part.y === position.y
-            )
-        );
-
-        return position;
-    }
-
+.game-btn:hover {
+    background: rgba(var(--rgb),.13);
 }
 
 
-/* =========================================
-   TIC TAC TOE
-========================================= */
-
-function startTicTacToe() {
-
-    clearAllGameTimers();
-
-    let board = Array(9).fill("");
-
-    let gameOver = false;
-
-    gameStats.innerHTML = `
-        <span>YOU <strong>X</strong></span>
-        <span>CPU <strong>O</strong></span>
-    `;
-
-    gameContent.innerHTML = `
-
-        <div class="ttt-board" id="tttBoard"></div>
-
-        <button class="game-action" id="tttRestart">
-            New Game
-        </button>
-
-    `;
-
-    const boardElement =
-        document.getElementById("tttBoard");
-
-    function render() {
-
-        boardElement.innerHTML = board.map(
-            (value, index) => `
-                <button
-                    class="ttt-cell"
-                    data-index="${index}"
-                >
-                    ${value}
-                </button>
-            `
-        ).join("");
-
-        boardElement
-            .querySelectorAll(".ttt-cell")
-            .forEach(cell => {
-
-                cell.addEventListener(
-                    "click",
-                    () => playerMove(
-                        Number(cell.dataset.index)
-                    )
-                );
-
-            });
-
-    }
-
-    function playerMove(index) {
-
-        if (
-            board[index] ||
-            gameOver
-        ) return;
-
-        board[index] = "X";
-
-        render();
-
-        if (checkWinner("X")) {
-
-            gameOver = true;
-
-            saveScore("tictactoe", 1);
-
-            showGameMessage(
-                "YOU WIN 🏆",
-                "You defeated the computer.",
-                "Play Again",
-                startTicTacToe
-            );
-
-            return;
-        }
-
-        if (board.every(Boolean)) {
-
-            gameOver = true;
-
-            showGameMessage(
-                "DRAW",
-                "Nobody won this time.",
-                "Play Again",
-                startTicTacToe
-            );
-
-            return;
-        }
-
-        addTimer(setTimeout(cpuMove, 450));
-
-    }
-
-    function cpuMove() {
-
-        if (gameOver) return;
-
-        const available =
-            board
-                .map((v,i) => v ? null : i)
-                .filter(v => v !== null);
-
-        let move;
-
-        /* Try to win */
-
-        move = findWinningMove("O");
-
-        /* Block player */
-
-        if (move === null)
-            move = findWinningMove("X");
-
-        /* Center */
-
-        if (
-            move === null &&
-            !board[4]
-        )
-            move = 4;
-
-        /* Random */
-
-        if (move === null) {
-
-            move =
-                available[
-                    Math.floor(
-                        Math.random() *
-                        available.length
-                    )
-                ];
-
-        }
-
-        board[move] = "O";
-
-        render();
-
-        if (checkWinner("O")) {
-
-            gameOver = true;
-
-            showGameMessage(
-                "CPU WINS",
-                "Better luck next time 😭",
-                "Try Again",
-                startTicTacToe
-            );
-
-            return;
-        }
-
-        if (board.every(Boolean)) {
-
-            gameOver = true;
-
-            showGameMessage(
-                "DRAW",
-                "That was close.",
-                "Play Again",
-                startTicTacToe
-            );
-
-        }
-
-    }
-
-    function findWinningMove(symbol) {
-
-        for (
-            let i = 0;
-            i < 9;
-            i++
-        ) {
-
-            if (board[i])
-                continue;
-
-            board[i] = symbol;
-
-            const win =
-                checkWinner(symbol);
-
-            board[i] = "";
-
-            if (win)
-                return i;
-
-        }
-
-        return null;
-    }
-
-    function checkWinner(symbol) {
-
-        const wins = [
-
-            [0,1,2],
-            [3,4,5],
-            [6,7,8],
-
-            [0,3,6],
-            [1,4,7],
-            [2,5,8],
-
-            [0,4,8],
-            [2,4,6]
-
-        ];
-
-        return wins.some(
-            combo =>
-                combo.every(
-                    i => board[i] === symbol
-                )
-        );
-
-    }
-
-    document.getElementById(
-        "tttRestart"
-    ).addEventListener(
-        "click",
-        startTicTacToe
-    );
-
-    render();
-
+/* GAME SCREEN */
+
+#gameScreen {
+    padding: 30px clamp(18px, 5vw, 70px) 90px;
+}
+
+.game-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    margin-bottom: 30px;
+}
+
+.game-header > div:nth-child(2) {
+    flex: 1;
+}
+
+.game-header small {
+    color: #72727d;
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.game-header h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 28px;
+}
+
+.score-box {
+    text-align: right;
+}
+
+.score-box small {
+    display: block;
+}
+
+.score-box strong {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 28px;
 }
 
 
-/* =========================================
-   REACTION TEST
-========================================= */
+/* GAME BOARD */
 
-function startReaction() {
+.game-board {
+    min-height: 600px;
 
-    clearAllGameTimers();
+    position: relative;
 
-    let started = false;
-    let startTime = 0;
+    padding: 25px;
 
-    gameStats.innerHTML = `
-        <span>BEST <strong>${getBest("reaction")} ms</strong></span>
-    `;
+    border: 1px solid var(--border);
+    border-radius: 28px;
 
-    gameContent.innerHTML = `
+    background:
+        radial-gradient(circle at 50% 0%, rgba(155,108,255,.08), transparent 35%),
+        #0c0c12;
 
-        <div
-            class="reaction-box"
-            id="reactionBox"
-        >
-            TAP TO START
-        </div>
+    overflow: hidden;
+}
 
-        <button
-            class="game-action"
-            id="reactionRestart"
-        >
-            Restart
-        </button>
-    `;
+.game-intro {
+    min-height: 280px;
 
-    const box =
-        document.getElementById("reactionBox");
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-    box.addEventListener(
-        "click",
-        reactionClick
-    );
+    text-align: center;
+}
 
-    document.getElementById(
-        "reactionRestart"
-    ).addEventListener(
-        "click",
-        startReaction
-    );
+.game-intro > span {
+    color: var(--purple);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
 
-    function reactionClick() {
+.game-intro h2 {
+    margin-top: 10px;
 
-        if (started) {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 38px;
+}
 
-            const result =
-                Date.now() - startTime;
+.game-intro p {
+    max-width: 450px;
+    margin: 10px auto 20px;
 
-            started = false;
+    color: #81818c;
+    font-size: 13px;
+}
 
-            saveScore(
-                "reaction",
-                Math.max(1, 1000 - result)
-            );
-
-            box.className = "reaction-box";
-
-            box.innerHTML = `
-                ${result} ms
-                <br>
-                <small>Tap to try again</small>
-            `;
-
-            return;
-        }
-
-        box.className =
-            "reaction-box waiting";
-
-        box.textContent =
-            "WAIT...";
-
-        const delay =
-            1500 +
-            Math.random() * 3000;
-
-        addTimer(
-            setTimeout(() => {
-
-                started = true;
-
-                startTime = Date.now();
-
-                box.className =
-                    "reaction-box ready";
-
-                box.textContent =
-                    "TAP NOW!";
-
-            }, delay)
-        );
-
-    }
-
+.mobile-hint {
+    text-align: center;
+    color: #50505a;
+    font-size: 10px;
 }
 
 
-/* =========================================
-   CLICK RUSH
-========================================= */
+/* REACTION */
 
-function startClickRush() {
+.reaction-area {
+    width: min(500px, 100%);
+    height: 250px;
 
-    clearAllGameTimers();
+    display: block;
 
-    let score = 0;
-    let time = 10;
-    let playing = false;
+    margin: 30px auto;
 
-    gameStats.innerHTML = `
-        <span>TIME <strong id="clickTime">10</strong></span>
-        <span>BEST <strong>${getBest("clickrush")}</strong></span>
-    `;
+    border: 1px solid var(--border);
+    border-radius: 22px;
 
-    gameContent.innerHTML = `
+    color: white;
+    background: #14141b;
 
-        <div class="click-score" id="clickScore">
-            0
-        </div>
+    font-size: 20px;
+    font-weight: 900;
+}
 
-        <div class="click-timer">
-            10 seconds
-        </div>
+.reaction-area.waiting {
+    background: #171720;
+}
 
-        <button class="big-click" id="bigClick">
-            START
-        </button>
-
-        <button class="game-action" id="clickRestart">
-            Reset
-        </button>
-    `;
-
-    const button =
-        document.getElementById("bigClick");
-
-    const scoreElement =
-        document.getElementById("clickScore");
-
-    const timeElement =
-        document.getElementById("clickTime");
-
-    button.addEventListener(
-        "click",
-        function() {
-
-            if (!playing) {
-
-                playing = true;
-                score = 1;
-
-                button.textContent =
-                    "CLICK!";
-
-                scoreElement.textContent =
-                    score;
-
-                startTimer();
-
-                return;
-            }
-
-            score++;
-
-            scoreElement.textContent =
-                score;
-
-        }
-    );
-
-    document.getElementById(
-        "clickRestart"
-    ).addEventListener(
-        "click",
-        startClickRush
-    );
-
-    function startTimer() {
-
-        addTimer(
-            setInterval(() => {
-
-                time--;
-
-                timeElement.textContent =
-                    time;
-
-                if (time <= 0) {
-
-                    playing = false;
-
-                    saveScore(
-                        "clickrush",
-                        score
-                    );
-
-                    button.textContent =
-                        "PLAY AGAIN";
-
-                }
-
-            }, 1000)
-        );
-
-    }
-
+.reaction-area.ready {
+    background: #36c978;
+    color: #06140d;
 }
 
 
-/* =========================================
-   MEMORY
-========================================= */
+/* TARGET */
 
-function startMemory() {
+.game-top-info {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    align-items: center;
 
-    clearAllGameTimers();
+    margin-bottom: 10px;
+}
 
-    const symbols = [
-        "🍎","🍎",
-        "🚀","🚀",
-        "🎮","🎮",
-        "🔥","🔥",
-        "⚡","⚡",
-        "👑","👑",
-        "💎","💎",
-        "🐉","🐉"
-    ];
+.game-top-info span {
+    color: #6f6f7a;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
 
-    symbols.sort(
-        () => Math.random() - .5
-    );
+.game-top-info strong {
+    font-size: 20px;
+}
 
-    let first = null;
-    let second = null;
+.target-area {
+    position: relative;
 
-    let lock = false;
+    width: min(800px, 100%);
+    height: 430px;
 
-    let matches = 0;
+    margin: 20px auto;
 
-    let moves = 0;
+    border-radius: 20px;
 
-    gameStats.innerHTML = `
-        <span>MATCHES <strong id="memoryMatches">0/8</strong></span>
-        <span>MOVES <strong id="memoryMoves">0</strong></span>
-    `;
+    border: 1px solid var(--border);
+    background: #09090e;
 
-    gameContent.innerHTML = `
+    overflow: hidden;
+}
 
-        <div
-            class="memory-board"
-            id="memoryBoard"
-        ></div>
+#targetCircle {
+    position: absolute;
 
-        <button
-            class="game-action"
-            id="memoryRestart"
-        >
-            New Game
-        </button>
-    `;
+    width: 48px;
+    height: 48px;
 
-    const board =
-        document.getElementById("memoryBoard");
+    border-radius: 50%;
 
-    function render() {
+    background: var(--blue);
 
-        board.innerHTML = symbols.map(
-            (symbol, index) => `
-                <button
-                    class="memory-card-game"
-                    data-index="${index}"
-                >
-                    ${symbol}
-                </button>
-            `
-        ).join("");
+    box-shadow: 0 0 30px rgba(77,140,255,.5);
 
-        board
-            .querySelectorAll(".memory-card-game")
-            .forEach(card => {
-
-                card.addEventListener(
-                    "click",
-                    () => flipCard(
-                        Number(card.dataset.index)
-                    )
-                );
-
-            });
-
-    }
-
-    function flipCard(index) {
-
-        if (
-            lock ||
-            index === first ||
-            board.children[index].classList.contains("matched")
-        )
-            return;
-
-        board.children[index]
-            .classList.add("flipped");
-
-        if (first === null) {
-
-            first = index;
-
-            return;
-        }
-
-        second = index;
-
-        moves++;
-
-        document.getElementById(
-            "memoryMoves"
-        ).textContent = moves;
-
-        lock = true;
-
-        if (
-            symbols[first] ===
-            symbols[second]
-        ) {
-
-            board.children[first]
-                .classList.add("matched");
-
-            board.children[second]
-                .classList.add("matched");
-
-            matches++;
-
-            document.getElementById(
-                "memoryMatches"
-            ).textContent =
-                `${matches}/8`;
-
-            resetTurn();
-
-            if (matches === 8) {
-
-                saveScore(
-                    "memory",
-                    Math.max(
-                        1,
-                        100 - moves
-                    )
-                );
-
-                showGameMessage(
-                    "MEMORY MASTER 🧠",
-                    `Finished in ${moves} moves.`,
-                    "Play Again",
-                    startMemory
-                );
-
-            }
-
-        } else {
-
-            addTimer(
-                setTimeout(() => {
-
-                    board.children[first]
-                        .classList.remove("flipped");
-
-                    board.children[second]
-                        .classList.remove("flipped");
-
-                    resetTurn();
-
-                }, 700)
-            );
-
-        }
-
-    }
-
-    function resetTurn() {
-
-        first = null;
-        second = null;
-        lock = false;
-
-    }
-
-    document.getElementById(
-        "memoryRestart"
-    ).addEventListener(
-        "click",
-        startMemory
-    );
-
-    render();
-
+    display: none;
 }
 
 
-/* =========================================
-   GAME MESSAGE
-========================================= */
+/* MEMORY */
 
-function showGameMessage(
-    title,
-    text,
-    buttonText,
-    callback
-) {
+.memory-grid {
+    max-width: 650px;
+    margin: 20px auto;
 
-    gameContent.innerHTML = `
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
 
-        <div style="
-            text-align:center;
-            padding:50px 10px;
-        ">
+.memory-card {
+    aspect-ratio: 1;
 
-            <div style="
-                font-size:48px;
-                margin-bottom:15px;
-            ">
-                🏆
-            </div>
+    border: 1px solid var(--border);
+    border-radius: 14px;
 
-            <h2 style="
-                font-family:'Space Grotesk';
-                font-size:32px;
-            ">
-                ${title}
-            </h2>
+    background: #15151d;
 
-            <p style="
-                color:#777783;
-                margin-top:8px;
-                font-size:13px;
-            ">
-                ${text}
-            </p>
+    color: transparent;
 
-            <button
-                class="game-action"
-                id="messageButton"
-            >
-                ${buttonText}
-            </button>
+    font-size: 25px;
 
-        </div>
-    `;
+    transition: .2s ease;
+}
 
-    document.getElementById(
-        "messageButton"
-    ).addEventListener(
-        "click",
-        callback
-    );
+.memory-card:hover {
+    background: #1c1c25;
+}
 
+.memory-card.flipped,
+.memory-card.matched {
+    color: white;
+    background: rgba(155,108,255,.12);
+    border-color: rgba(155,108,255,.3);
 }
 
 
-/* =========================================
-   BEST SCORE
-========================================= */
+/* NUMBER */
 
-function getBest(game) {
+#numberQuestion {
+    font-size: 45px;
+}
 
-    const scores =
-        getScores(game);
+.number-options {
+    max-width: 500px;
 
-    if (!scores.length)
-        return 0;
+    margin: 20px auto;
 
-    return scores[0].score;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
 
+.number-option {
+    padding: 18px;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    color: white;
+    background: #15151d;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.number-option:hover {
+    border-color: rgba(155,108,255,.4);
+    background: rgba(155,108,255,.08);
 }
 
 
-/* =========================================
-   GLOBAL KEYBOARD CLEANUP
-========================================= */
+/* LEADERBOARD */
 
-document.addEventListener(
-    "keydown",
-    function(e) {
+#leaderboardScreen {
+    padding: 70px clamp(18px, 5vw, 70px);
+}
 
-        if (
-            e.key === "Escape" &&
-            !modal.classList.contains("hidden")
-        ) {
+.leaderboard-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
 
-            closeGameWindow();
+.leaderboard-header .back-btn {
+    display: block;
+    margin-bottom: 30px;
+}
 
-        }
+.leaderboard-header h1 {
+    margin-top: 18px;
 
+    font-family: "Space Grotesk", sans-serif;
+    font-size: clamp(45px, 8vw, 80px);
+    letter-spacing: -4px;
+}
+
+.leaderboard-header p {
+    color: #81818d;
+    font-size: 13px;
+}
+
+.leaderboard-card {
+    max-width: 900px;
+    margin: auto;
+
+    border: 1px solid var(--border);
+    border-radius: 24px;
+
+    background: #0d0d13;
+
+    overflow: hidden;
+}
+
+.leaderboard-tabs {
+    display: flex;
+    overflow-x: auto;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.tab {
+    flex: 1;
+    min-width: 100px;
+
+    padding: 15px 12px;
+
+    border: 0;
+    border-bottom: 2px solid transparent;
+
+    color: #686873;
+    background: transparent;
+
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.tab.active {
+    color: white;
+    border-bottom-color: var(--purple);
+}
+
+.leader-row {
+    display: grid;
+    grid-template-columns: 55px 1fr 120px;
+
+    align-items: center;
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.leader-row:last-child {
+    border-bottom: 0;
+}
+
+.rank {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #777783;
+}
+
+.leader-name {
+    font-weight: 700;
+}
+
+.leader-game {
+    color: #666671;
+    font-size: 9px;
+    margin-top: 3px;
+    text-transform: uppercase;
+}
+
+.leader-score {
+    text-align: right;
+
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+/* MODALS */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+
+    display: grid;
+    place-items: center;
+
+    padding: 20px;
+
+    background: rgba(0,0,0,.72);
+    backdrop-filter: blur(12px);
+}
+
+.modal-card {
+    width: min(430px, 100%);
+
+    padding: 35px;
+
+    border: 1px solid var(--border);
+    border-radius: 25px;
+
+    background: #111118;
+
+    text-align: center;
+
+    box-shadow: 0 30px 100px rgba(0,0,0,.5);
+}
+
+.modal-icon {
+    font-size: 30px;
+    margin-bottom: 15px;
+    color: var(--purple);
+}
+
+.modal-card h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 28px;
+}
+
+.modal-card p {
+    margin: 8px 0 20px;
+    color: #80808b;
+    font-size: 13px;
+}
+
+.modal-card input {
+    width: 100%;
+
+    padding: 14px;
+
+    margin-bottom: 10px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    outline: none;
+
+    color: white;
+    background: #0a0a0f;
+}
+
+.modal-card input:focus {
+    border-color: rgba(155,108,255,.5);
+}
+
+.modal-card .primary-btn,
+.modal-card .secondary-btn {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.final-score {
+    margin: 25px 0;
+
+    padding: 20px;
+
+    border: 1px solid rgba(155,108,255,.15);
+    border-radius: 15px;
+
+    background: rgba(155,108,255,.05);
+}
+
+.final-score span {
+    display: block;
+
+    color: #777783;
+
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.final-score strong {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--purple);
+
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 55px;
+}
+
+
+/* FOOTER */
+
+footer {
+    padding: 50px 20px;
+
+    text-align: center;
+
+    border-top: 1px solid var(--border);
+}
+
+footer strong {
+    font-family: "Space Grotesk", sans-serif;
+}
+
+footer p {
+    margin-top: 7px;
+
+    color: #4f4f59;
+
+    font-size: 10px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 800px) {
+
+    .games-grid {
+        grid-template-columns: 1fr;
     }
-);
+
+    .hero h1 {
+        letter-spacing: -5px;
+    }
+
+    .game-board {
+        min-height: 550px;
+    }
+
+    .target-area {
+        height: 360px;
+    }
+}
+
+
+@media (max-width: 520px) {
+
+    .navbar {
+        height: 62px;
+        padding: 0 14px;
+    }
+
+    .brand {
+        font-size: 19px;
+    }
+
+    #playerDisplay {
+        display: none;
+    }
+
+    .hero {
+        min-height: 560px;
+        padding-top: 50px;
+    }
+
+    .hero h1 {
+        font-size: 72px;
+        letter-spacing: -5px;
+    }
+
+    .hero p {
+        font-size: 13px;
+    }
+
+    .games-section {
+        padding: 35px 14px 70px;
+    }
+
+    .section-head h2 {
+        font-size: 38px;
+    }
+
+    .game-card {
+        padding: 22px;
+    }
+
+    #gameScreen {
+        padding: 18px 12px 60px;
+    }
+
+    .game-header {
+        gap: 10px;
+    }
+
+    .game-header h2 {
+        font-size: 21px;
+    }
+
+    .game-board {
+        padding: 14px;
+        min-height: 540px;
+        border-radius: 20px;
+    }
+
+    .reaction-area {
+        height: 230px;
+    }
+
+    .target-area {
+        height: 350px;
+    }
+
+    .memory-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+    }
+
+    .memory-card {
+        border-radius: 10px;
+        font-size: 19px;
+    }
+
+    #numberQuestion {
+        font-size: 36px;
+    }
+
+    .leader-row {
+        grid-template-columns: 40px 1fr 70px;
+        padding: 15px 12px;
+    }
+
+    .leader-score {
+        font-size: 17px;
+    }
+
+    .modal-card {
+        padding: 28px 20px;
+    }
+}
+
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: #07070a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #25252d;
+    border-radius: 20px;
+}
