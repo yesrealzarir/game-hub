@@ -1,35 +1,74 @@
-/* =========================================================
-   GAMEHUB
+```javascript
+/* =====================================================
+   GAMEZONE
    No Supabase
    LocalStorage leaderboard
-   PC + Mobile controls
-========================================================= */
+===================================================== */
+
+"use strict";
 
 
-/* =========================================================
+/* =====================================================
+   GLOBAL STATE
+===================================================== */
+
+let playerName = "";
+let currentGame = null;
+
+let gameTimer = null;
+let animationFrame = null;
+
+const scoresKey = "gamezone_leaderboard";
+
+
+/* =====================================================
+   DOM
+===================================================== */
+
+const menuScreen =
+    document.getElementById("menuScreen");
+
+const gameScreen =
+    document.getElementById("gameScreen");
+
+const nameModal =
+    document.getElementById("nameModal");
+
+const leaderboardModal =
+    document.getElementById("leaderboardModal");
+
+const playerNameInput =
+    document.getElementById("playerNameInput");
+
+const nameError =
+    document.getElementById("nameError");
+
+const gameContainer =
+    document.getElementById("gameContainer");
+
+const gameTitle =
+    document.getElementById("gameTitle");
+
+const gameScore =
+    document.getElementById("gameScore");
+
+const playerDisplay =
+    document.getElementById("playerDisplay");
+
+
+/* =====================================================
    PLAYER
-========================================================= */
+===================================================== */
 
-const PLAYER_KEY = "gamehub_player";
-const SCORES_KEY = "gamehub_scores";
+function openNameModal(game = null) {
 
-let playerName = localStorage.getItem(PLAYER_KEY) || "";
+    if (game) {
+        currentGame = game;
+    }
 
-const playerNameDisplay = document.getElementById("playerNameDisplay");
-const nameModal = document.getElementById("nameModal");
-const playerNameInput = document.getElementById("playerNameInput");
-const saveNameBtn = document.getElementById("saveNameBtn");
-const changeNameBtn = document.getElementById("changeNameBtn");
+    nameError.textContent = "";
 
-
-function updatePlayerDisplay() {
-    playerNameDisplay.textContent = playerName || "Player";
-}
-
-
-function showNameModal() {
-    playerNameInput.value = playerName;
-    nameModal.classList.add("show");
+    nameModal.classList.remove("hidden");
 
     setTimeout(() => {
         playerNameInput.focus();
@@ -37,205 +76,117 @@ function showNameModal() {
 }
 
 
-function savePlayerName() {
+function closeNameModal() {
 
-    const value = playerNameInput.value.trim();
+    nameModal.classList.add("hidden");
+}
 
-    if (!value) {
-        showToast("Enter a name first.");
+
+function startPlayer() {
+
+    const name =
+        playerNameInput.value.trim();
+
+    if (!name) {
+
+        nameError.textContent =
+            "Bro naam ta dao 😭";
+
+        playerNameInput.focus();
+
         return;
     }
 
-    playerName = value.substring(0, 18);
+    if (name.length < 2) {
+
+        nameError.textContent =
+            "At least 2 characters.";
+
+        return;
+    }
+
+    playerName = name.substring(0, 16);
 
     localStorage.setItem(
-        PLAYER_KEY,
+        "gamezone_player",
         playerName
     );
 
-    updatePlayerDisplay();
+    playerDisplay.textContent =
+        "PLAYER: " + playerName.toUpperCase();
 
-    nameModal.classList.remove("show");
+    closeNameModal();
 
-    showToast("Name saved.");
-}
-
-
-saveNameBtn.addEventListener(
-    "click",
-    savePlayerName
-);
-
-
-playerNameInput.addEventListener(
-    "keydown",
-    event => {
-
-        if (event.key === "Enter") {
-            savePlayerName();
-        }
-
+    if (currentGame) {
+        startGame(currentGame);
     }
-);
-
-
-changeNameBtn.addEventListener(
-    "click",
-    showNameModal
-);
-
-
-updatePlayerDisplay();
-
-
-if (!playerName) {
-    setTimeout(showNameModal, 500);
 }
 
 
-/* =========================================================
-   SCREENS
-========================================================= */
+/* =====================================================
+   MENU
+===================================================== */
 
-const homeScreen = document.getElementById("homeScreen");
-const gameScreen = document.getElementById("gameScreen");
+function goToMenu() {
 
-const gameContainers = {
-    clickrush: document.getElementById("clickrushGame"),
-    snake: document.getElementById("snakeGame"),
-    dodge: document.getElementById("dodgeGame")
-};
+    stopCurrentGame();
 
-const gameTitles = {
-    clickrush: "Click Rush",
-    snake: "Snake",
-    dodge: "Dodge"
-};
+    gameScreen.classList.add("hidden");
 
-let currentGame = null;
+    menuScreen.classList.remove("hidden");
+
+    gameContainer.innerHTML = "";
+
+    currentGame = null;
+}
 
 
-/* =========================================================
-   GAME STATE
-========================================================= */
+function startGame(game) {
 
-let animationFrame = null;
+    if (!playerName) {
 
-let clickTimer = null;
-let clickScore = 0;
-let clickTime = 30;
-let clickStarted = false;
+        currentGame = game;
 
-let snakeState = null;
+        openNameModal(game);
 
-let dodgeState = null;
-
-
-/* =========================================================
-   GAME NAVIGATION
-========================================================= */
-
-document.querySelectorAll(".play-btn").forEach(button => {
-
-    button.addEventListener("click", () => {
-
-        const game = button.dataset.game;
-
-        openGame(game);
-
-    });
-
-});
-
-
-function openGame(game) {
-
-    if (!gameContainers[game]) {
-        console.error("Unknown game:", game);
         return;
     }
 
     stopCurrentGame();
 
+    menuScreen.classList.add("hidden");
+
+    gameScreen.classList.remove("hidden");
+
     currentGame = game;
 
-    homeScreen.classList.remove("active");
-    gameScreen.classList.add("active");
-
-    Object.values(gameContainers).forEach(container => {
-        container.classList.remove("active");
-    });
-
-    gameContainers[game].classList.add("active");
-
-    document.getElementById("activeGameLabel").textContent =
-        "GAME 0" + Object.keys(gameTitles).indexOf(game) + 1;
-
-    document.getElementById("activeGameTitle").textContent =
-        gameTitles[game];
-
-    document.getElementById("scoreDisplay").textContent = "0";
-
-    document.getElementById("gameOverOverlay").classList.add("hidden");
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-
-    if (game === "clickrush") {
-        startClickRush();
+    if (game === "reaction") {
+        startReactionGame();
     }
 
-    if (game === "snake") {
-        startSnake();
+    else if (game === "tap") {
+        startTapGame();
     }
 
-    if (game === "dodge") {
-        startDodge();
+    else if (game === "memory") {
+        startMemoryGame();
+    }
+
+    else if (game === "dodger") {
+        startDodgerGame();
     }
 }
 
 
-function backToMenu() {
-
-    stopCurrentGame();
-
-    currentGame = null;
-
-    gameScreen.classList.remove("active");
-    homeScreen.classList.add("active");
-
-    document.getElementById("gameOverOverlay")
-        .classList.add("hidden");
-
-    renderLeaderboard();
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
-
-
-document.getElementById("backBtn")
-    .addEventListener("click", backToMenu);
-
-
-document.getElementById("overlayMenuBtn")
-    .addEventListener("click", backToMenu);
-
-
-/* =========================================================
-   STOP GAME
-========================================================= */
+/* =====================================================
+   GAME CLEANUP
+===================================================== */
 
 function stopCurrentGame() {
 
-    if (clickTimer) {
-        clearInterval(clickTimer);
-        clickTimer = null;
+    if (gameTimer) {
+        clearInterval(gameTimer);
+        gameTimer = null;
     }
 
     if (animationFrame) {
@@ -243,1374 +194,1146 @@ function stopCurrentGame() {
         animationFrame = null;
     }
 
-    clickStarted = false;
+    window.onkeydown = null;
 
-    snakeState = null;
-    dodgeState = null;
-}
-
-
-/* =========================================================
-   GAME OVER
-========================================================= */
-
-function gameOver(score, message = "Good game.") {
-
-    stopCurrentGame();
-
-    const finalScore =
-        Math.max(0, Math.floor(score));
-
-    document.getElementById("finalScore")
-        .textContent = finalScore;
-
-    document.getElementById("gameOverMessage")
-        .textContent = message;
-
-    document.getElementById("gameOverOverlay")
-        .classList.remove("hidden");
-
-    document.getElementById("scoreDisplay")
-        .textContent = finalScore;
-
-    saveScore(
-        currentGame,
-        finalScore
-    );
-}
-
-
-/* =========================================================
-   RETRY
-========================================================= */
-
-document.getElementById("retryBtn")
-    .addEventListener("click", () => {
-
-        if (!currentGame) {
-            return;
-        }
-
-        openGame(currentGame);
-
+    document.querySelectorAll(
+        ".game-event-listener"
+    ).forEach(el => {
+        el.replaceWith(el.cloneNode(true));
     });
-
-
-/* =========================================================
-   CLICK RUSH
-========================================================= */
-
-const bigClickButton =
-    document.getElementById("bigClickButton");
-
-const clickTimeDisplay =
-    document.getElementById("clickTime");
-
-const clickScoreDisplay =
-    document.getElementById("clickScore");
-
-const clickMessage =
-    document.getElementById("clickMessage");
-
-
-function startClickRush() {
-
-    clickScore = 0;
-    clickTime = 30;
-    clickStarted = false;
-
-    clickScoreDisplay.textContent = "0";
-    clickTimeDisplay.textContent = "30";
-    clickMessage.textContent = "TAP TO START";
-
-    bigClickButton.textContent = "TAP";
 }
 
 
-bigClickButton.addEventListener(
-    "click",
-    clickRushTap
-);
+/* =====================================================
+   SCORE
+===================================================== */
 
+function setScore(score) {
 
-function clickRushTap() {
-
-    if (!clickStarted) {
-
-        clickStarted = true;
-
-        clickScore = 1;
-
-        clickMessage.textContent =
-            "KEEP GOING!";
-
-        clickScoreDisplay.textContent =
-            clickScore;
-
-        clickTimer = setInterval(() => {
-
-            clickTime--;
-
-            clickTimeDisplay.textContent =
-                clickTime;
-
-            if (clickTime <= 0) {
-
-                clearInterval(clickTimer);
-                clickTimer = null;
-
-                gameOver(
-                    clickScore,
-                    "You survived the full 30 seconds."
-                );
-
-            }
-
-        }, 1000);
-
-        return;
-    }
-
-
-    clickScore++;
-
-    clickScoreDisplay.textContent =
-        clickScore;
-
-    document.getElementById("scoreDisplay")
-        .textContent = clickScore;
-}
-
-
-/* =========================================================
-   SNAKE
-========================================================= */
-
-const snakeCanvas =
-    document.getElementById("snakeCanvas");
-
-const snakeCtx =
-    snakeCanvas.getContext("2d");
-
-const snakeScoreDisplay =
-    document.getElementById("snakeScore");
-
-const snakeBestDisplay =
-    document.getElementById("snakeBest");
-
-
-const SNAKE_SIZE = 20;
-const SNAKE_COLS = 25;
-const SNAKE_ROWS = 25;
-
-let snakeLastTime = 0;
-let snakeMoveTimer = 0;
-
-
-function startSnake() {
-
-    const best =
-        Number(localStorage.getItem("gamehub_snake_best") || 0);
-
-    snakeBestDisplay.textContent = best;
-
-    snakeState = {
-
-        snake: [
-            { x: 12, y: 12 },
-            { x: 11, y: 12 },
-            { x: 10, y: 12 }
-        ],
-
-        direction: {
-            x: 1,
-            y: 0
-        },
-
-        nextDirection: {
-            x: 1,
-            y: 0
-        },
-
-        food: randomSnakeFood(),
-
-        score: 0,
-
-        alive: true
-
-    };
-
-    snakeScoreDisplay.textContent = "0";
-
-    snakeLastTime = performance.now();
-    snakeMoveTimer = 0;
-
-    animationFrame =
-        requestAnimationFrame(snakeLoop);
-
-}
-
-
-function randomSnakeFood() {
-
-    let food;
-
-    do {
-
-        food = {
-            x: Math.floor(Math.random() * SNAKE_COLS),
-            y: Math.floor(Math.random() * SNAKE_ROWS)
-        };
-
-    } while (
-        snakeState &&
-        snakeState.snake.some(
-            part =>
-                part.x === food.x &&
-                part.y === food.y
-        )
-    );
-
-    return food;
-}
-
-
-function snakeLoop(timestamp) {
-
-    if (!snakeState || !snakeState.alive) {
-        return;
-    }
-
-    const delta =
-        timestamp - snakeLastTime;
-
-    snakeLastTime = timestamp;
-
-    snakeMoveTimer += delta;
-
-    if (snakeMoveTimer >= 105) {
-
-        snakeMoveTimer = 0;
-
-        updateSnake();
-    }
-
-    drawSnake();
-
-    animationFrame =
-        requestAnimationFrame(snakeLoop);
-}
-
-
-function updateSnake() {
-
-    const state = snakeState;
-
-    state.direction = {
-        ...state.nextDirection
-    };
-
-    const head = state.snake[0];
-
-    const newHead = {
-
-        x: head.x + state.direction.x,
-        y: head.y + state.direction.y
-
-    };
-
-
-    if (
-        newHead.x < 0 ||
-        newHead.x >= SNAKE_COLS ||
-        newHead.y < 0 ||
-        newHead.y >= SNAKE_ROWS
-    ) {
-
-        endSnake();
-
-        return;
-    }
-
-
-    const eating =
-        newHead.x === state.food.x &&
-        newHead.y === state.food.y;
-
-
-    const bodyToCheck =
-        eating
-            ? state.snake
-            : state.snake.slice(0, -1);
-
-
-    if (
-        bodyToCheck.some(
-            part =>
-                part.x === newHead.x &&
-                part.y === newHead.y
-        )
-    ) {
-
-        endSnake();
-
-        return;
-    }
-
-
-    state.snake.unshift(newHead);
-
-
-    if (eating) {
-
-        state.score++;
-
-        state.food =
-            randomSnakeFood();
-
-        snakeScoreDisplay.textContent =
-            state.score;
-
-        document.getElementById("scoreDisplay")
-            .textContent = state.score;
-
-    } else {
-
-        state.snake.pop();
-
-    }
-
-}
-
-
-function drawSnake() {
-
-    const state = snakeState;
-
-    snakeCtx.fillStyle = "#06070a";
-
-    snakeCtx.fillRect(
-        0,
-        0,
-        snakeCanvas.width,
-        snakeCanvas.height
-    );
-
-
-    /* grid */
-
-    snakeCtx.strokeStyle =
-        "rgba(255,255,255,.035)";
-
-    snakeCtx.lineWidth = 1;
-
-    for (let x = 0; x <= 25; x++) {
-
-        snakeCtx.beginPath();
-
-        snakeCtx.moveTo(
-            x * SNAKE_SIZE,
-            0
-        );
-
-        snakeCtx.lineTo(
-            x * SNAKE_SIZE,
-            500
-        );
-
-        snakeCtx.stroke();
-
-    }
-
-
-    for (let y = 0; y <= 25; y++) {
-
-        snakeCtx.beginPath();
-
-        snakeCtx.moveTo(
-            0,
-            y * SNAKE_SIZE
-        );
-
-        snakeCtx.lineTo(
-            500,
-            y * SNAKE_SIZE
-        );
-
-        snakeCtx.stroke();
-
-    }
-
-
-    /* food */
-
-    snakeCtx.fillStyle = "#ff5570";
-
-    snakeCtx.beginPath();
-
-    snakeCtx.arc(
-        state.food.x * SNAKE_SIZE + 10,
-        state.food.y * SNAKE_SIZE + 10,
-        7,
-        0,
-        Math.PI * 2
-    );
-
-    snakeCtx.fill();
-
-
-    /* snake */
-
-    state.snake.forEach(
-        (part, index) => {
-
-            snakeCtx.fillStyle =
-                index === 0
-                    ? "#b89fff"
-                    : "#7858db";
-
-            snakeCtx.fillRect(
-                part.x * SNAKE_SIZE + 2,
-                part.y * SNAKE_SIZE + 2,
-                SNAKE_SIZE - 4,
-                SNAKE_SIZE - 4
-            );
-
-        }
-    );
-
-}
-
-
-function endSnake() {
-
-    if (!snakeState) {
-        return;
-    }
-
-    snakeState.alive = false;
-
-    const score = snakeState.score;
-
-    const best =
-        Number(
-            localStorage.getItem(
-                "gamehub_snake_best"
-            ) || 0
-        );
-
-    if (score > best) {
-
-        localStorage.setItem(
-            "gamehub_snake_best",
-            score
-        );
-
-        snakeBestDisplay.textContent =
-            score;
-
-    }
-
-    gameOver(
-        score,
-        score > best
-            ? "NEW PERSONAL BEST!"
-            : "The snake met its destiny."
-    );
-}
-
-
-/* =========================================================
-   SNAKE CONTROLS
-========================================================= */
-
-function changeSnakeDirection(dir) {
-
-    if (!snakeState || !snakeState.alive) {
-        return;
-    }
-
-    const directions = {
-
-        up: { x: 0, y: -1 },
-        down: { x: 0, y: 1 },
-        left: { x: -1, y: 0 },
-        right: { x: 1, y: 0 }
-
-    };
-
-    const next = directions[dir];
-
-    if (!next) {
-        return;
-    }
-
-
-    const current =
-        snakeState.direction;
-
-
-    if (
-        current.x + next.x === 0 &&
-        current.y + next.y === 0
-    ) {
-        return;
-    }
-
-
-    snakeState.nextDirection = next;
-}
-
-
-document.querySelectorAll(
-    ".snake-controls button"
-).forEach(button => {
-
-    button.addEventListener(
-        "pointerdown",
-        event => {
-
-            event.preventDefault();
-
-            changeSnakeDirection(
-                button.dataset.dir
-            );
-
-        }
-    );
-
-});
-
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            currentGame !== "snake" ||
-            !snakeState
-        ) {
-            return;
-        }
-
-        const key = event.key.toLowerCase();
-
-        if (
-            [
-                "arrowup",
-                "arrowdown",
-                "arrowleft",
-                "arrowright",
-                "w",
-                "a",
-                "s",
-                "d"
-            ].includes(key)
-        ) {
-            event.preventDefault();
-        }
-
-
-        if (
-            key === "arrowup" ||
-            key === "w"
-        ) {
-            changeSnakeDirection("up");
-        }
-
-        if (
-            key === "arrowdown" ||
-            key === "s"
-        ) {
-            changeSnakeDirection("down");
-        }
-
-        if (
-            key === "arrowleft" ||
-            key === "a"
-        ) {
-            changeSnakeDirection("left");
-        }
-
-        if (
-            key === "arrowright" ||
-            key === "d"
-        ) {
-            changeSnakeDirection("right");
-        }
-
-    }
-);
-
-
-/* =========================================================
-   DODGE
-========================================================= */
-
-const dodgeCanvas =
-    document.getElementById("dodgeCanvas");
-
-const dodgeCtx =
-    dodgeCanvas.getContext("2d");
-
-const dodgeScoreDisplay =
-    document.getElementById("dodgeScore");
-
-const dodgeBestDisplay =
-    document.getElementById("dodgeBest");
-
-
-function startDodge() {
-
-    const best =
-        Number(
-            localStorage.getItem(
-                "gamehub_dodge_best"
-            ) || 0
-        );
-
-    dodgeBestDisplay.textContent = best;
-
-
-    dodgeState = {
-
-        player: {
-            x: 250,
-            y: 540,
-            width: 42,
-            height: 20,
-            speed: 7
-        },
-
-        blocks: [],
-
-        score: 0,
-
-        spawnTimer: 0,
-
-        speed: 3,
-
-        left: false,
-
-        right: false,
-
-        alive: true,
-
-        lastTime: performance.now()
-
-    };
-
-
-    dodgeScoreDisplay.textContent = "0";
-
-    animationFrame =
-        requestAnimationFrame(dodgeLoop);
-}
-
-
-function dodgeLoop(timestamp) {
-
-    if (!dodgeState || !dodgeState.alive) {
-        return;
-    }
-
-    const state = dodgeState;
-
-    const delta =
-        Math.min(
-            timestamp - state.lastTime,
-            50
-        );
-
-    state.lastTime = timestamp;
-
-
-    updateDodge(delta);
-
-    drawDodge();
-
-
-    animationFrame =
-        requestAnimationFrame(dodgeLoop);
-}
-
-
-function updateDodge(delta) {
-
-    const state = dodgeState;
-
-    const seconds =
-        delta / 1000;
-
-
-    if (state.left) {
-        state.player.x -=
-            state.player.speed * 60 * seconds;
-    }
-
-    if (state.right) {
-        state.player.x +=
-            state.player.speed * 60 * seconds;
-    }
-
-
-    state.player.x =
-        Math.max(
-            0,
-            Math.min(
-                dodgeCanvas.width -
-                    state.player.width,
-                state.player.x
-            )
-        );
-
-
-    state.spawnTimer += delta;
-
-
-    const spawnRate =
-        Math.max(
-            260,
-            700 - state.score * 5
-        );
-
-
-    if (state.spawnTimer >= spawnRate) {
-
-        state.spawnTimer = 0;
-
-        state.blocks.push({
-
-            x:
-                Math.random() *
-                (dodgeCanvas.width - 32),
-
-            y: -40,
-
-            width:
-                22 +
-                Math.random() * 22,
-
-            height:
-                22 +
-                Math.random() * 22,
-
-            speed:
-                state.speed +
-                Math.random() * 2
-
-        });
-
-    }
-
-
-    state.blocks.forEach(block => {
-
-        block.y +=
-            block.speed *
-            60 *
-            seconds;
-
-    });
-
-
-    state.blocks =
-        state.blocks.filter(
-            block =>
-                block.y <
-                dodgeCanvas.height + 60
-        );
-
-
-    state.score +=
-        seconds * 10;
-
-    const shownScore =
-        Math.floor(state.score);
-
-    dodgeScoreDisplay.textContent =
-        shownScore;
-
-    document.getElementById("scoreDisplay")
-        .textContent = shownScore;
-
-
-    state.speed +=
-        seconds * 0.035;
-
-
-    for (const block of state.blocks) {
-
-        if (
-            rectangleCollision(
-                state.player,
-                block
-            )
-        ) {
-
-            endDodge();
-
-            return;
-        }
-
-    }
-
-}
-
-
-function rectangleCollision(a, b) {
-
-    return (
-
-        a.x < b.x + b.width &&
-
-        a.x + a.width > b.x &&
-
-        a.y < b.y + b.height &&
-
-        a.y + a.height > b.y
-
-    );
-}
-
-
-function drawDodge() {
-
-    const state = dodgeState;
-
-    dodgeCtx.fillStyle = "#050609";
-
-    dodgeCtx.fillRect(
-        0,
-        0,
-        dodgeCanvas.width,
-        dodgeCanvas.height
-    );
-
-
-    /* stars */
-
-    dodgeCtx.fillStyle =
-        "rgba(255,255,255,.18)";
-
-    for (
-        let i = 0;
-        i < 50;
-        i++
-    ) {
-
-        const x =
-            (i * 97) %
-            dodgeCanvas.width;
-
-        const y =
-            (i * 173 +
-                Math.floor(state.score * 2)) %
-            dodgeCanvas.height;
-
-        dodgeCtx.fillRect(
-            x,
-            y,
-            2,
-            2
-        );
-
-    }
-
-
-    /* blocks */
-
-    state.blocks.forEach(block => {
-
-        dodgeCtx.fillStyle = "#ff5570";
-
-        dodgeCtx.shadowColor =
-            "rgba(255,85,112,.35)";
-
-        dodgeCtx.shadowBlur = 15;
-
-        dodgeCtx.fillRect(
-            block.x,
-            block.y,
-            block.width,
-            block.height
-        );
-
-        dodgeCtx.shadowBlur = 0;
-
-    });
-
-
-    /* player */
-
-    dodgeCtx.fillStyle = "#9b7cff";
-
-    dodgeCtx.shadowColor =
-        "rgba(155,124,255,.45)";
-
-    dodgeCtx.shadowBlur = 20;
-
-    dodgeCtx.fillRect(
-        state.player.x,
-        state.player.y,
-        state.player.width,
-        state.player.height
-    );
-
-    dodgeCtx.shadowBlur = 0;
-
-
-    /* player center */
-
-    dodgeCtx.fillStyle = "#e6ddff";
-
-    dodgeCtx.fillRect(
-        state.player.x + 12,
-        state.player.y + 5,
-        18,
-        5
-    );
-
-}
-
-
-function endDodge() {
-
-    if (!dodgeState) {
-        return;
-    }
-
-    dodgeState.alive = false;
-
-    const score =
-        Math.floor(dodgeState.score);
-
-    const best =
-        Number(
-            localStorage.getItem(
-                "gamehub_dodge_best"
-            ) || 0
-        );
-
-    if (score > best) {
-
-        localStorage.setItem(
-            "gamehub_dodge_best",
-            score
-        );
-
-        dodgeBestDisplay.textContent =
-            score;
-
-    }
-
-    gameOver(
-        score,
-        score > best
-            ? "NEW PERSONAL BEST!"
-            : "Those blocks got you."
-    );
-}
-
-
-/* =========================================================
-   DODGE CONTROLS
-========================================================= */
-
-function setDodgeDirection(direction, value) {
-
-    if (!dodgeState) {
-        return;
-    }
-
-    if (direction === "left") {
-        dodgeState.left = value;
-    }
-
-    if (direction === "right") {
-        dodgeState.right = value;
-    }
-}
-
-
-function setupDodgeButton(id, direction) {
-
-    const button =
-        document.getElementById(id);
-
-    button.addEventListener(
-        "pointerdown",
-        event => {
-
-            event.preventDefault();
-
-            setDodgeDirection(
-                direction,
-                true
-            );
-
-        }
-    );
-
-    button.addEventListener(
-        "pointerup",
-        () => {
-
-            setDodgeDirection(
-                direction,
-                false
-            );
-
-        }
-    );
-
-    button.addEventListener(
-        "pointerleave",
-        () => {
-
-            setDodgeDirection(
-                direction,
-                false
-            );
-
-        }
-    );
-
-    button.addEventListener(
-        "pointercancel",
-        () => {
-
-            setDodgeDirection(
-                direction,
-                false
-            );
-
-        }
-    );
-
-}
-
-
-setupDodgeButton(
-    "dodgeLeft",
-    "left"
-);
-
-setupDodgeButton(
-    "dodgeRight",
-    "right"
-);
-
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            currentGame !== "dodge" ||
-            !dodgeState
-        ) {
-            return;
-        }
-
-        const key =
-            event.key.toLowerCase();
-
-        if (
-            key === "arrowleft" ||
-            key === "a"
-        ) {
-
-            event.preventDefault();
-
-            dodgeState.left = true;
-
-        }
-
-        if (
-            key === "arrowright" ||
-            key === "d"
-        ) {
-
-            event.preventDefault();
-
-            dodgeState.right = true;
-
-        }
-
-    }
-);
-
-
-document.addEventListener(
-    "keyup",
-    event => {
-
-        if (
-            !dodgeState
-        ) {
-            return;
-        }
-
-        const key =
-            event.key.toLowerCase();
-
-        if (
-            key === "arrowleft" ||
-            key === "a"
-        ) {
-
-            dodgeState.left = false;
-
-        }
-
-        if (
-            key === "arrowright" ||
-            key === "d"
-        ) {
-
-            dodgeState.right = false;
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   LEADERBOARD
-========================================================= */
-
-function getScores() {
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem(
-                SCORES_KEY
-            ) || "[]"
-        );
-
-    } catch {
-
-        return [];
-
-    }
+    gameScore.textContent =
+        "SCORE: " + Math.floor(score);
 }
 
 
 function saveScore(game, score) {
 
-    if (!playerName) {
-        playerName = "Player";
+    score = Math.floor(score);
+
+    if (score < 0) {
+        score = 0;
     }
 
     const scores =
-        getScores();
+        JSON.parse(
+            localStorage.getItem(scoresKey) || "[]"
+        );
 
     scores.push({
-
-        name: playerName,
-
-        game: gameTitles[game] || game,
-
-        score: Math.floor(score),
-
+        name: playerName || "Guest",
+        game,
+        score,
         date: Date.now()
-
     });
 
-
     scores.sort(
-        (a, b) =>
-            b.score - a.score
+        (a, b) => b.score - a.score
     );
 
-
-    const trimmed =
-        scores.slice(0, 50);
-
+    scores.splice(20);
 
     localStorage.setItem(
-        SCORES_KEY,
-        JSON.stringify(trimmed)
+        scoresKey,
+        JSON.stringify(scores)
+    );
+}
+
+
+/* =====================================================
+   REACTION RUSH
+===================================================== */
+
+function startReactionGame() {
+
+    gameTitle.textContent =
+        "REACTION RUSH";
+
+    setScore(0);
+
+    gameContainer.innerHTML = `
+
+        <div class="game-box">
+
+            <h2>Reaction Rush</h2>
+
+            <p>
+                Screen green hole instantly click koro.
+            </p>
+
+            <div
+                id="reactionArea"
+                class="reaction-area waiting"
+            >
+                <div class="reaction-text">
+                    CLICK TO START
+                </div>
+            </div>
+
+        </div>
+
+    `;
+
+    const area =
+        document.getElementById("reactionArea");
+
+    let started = false;
+    let ready = false;
+    let startTime = 0;
+    let timeout = null;
+
+    area.addEventListener("click", () => {
+
+        if (!started) {
+
+            started = true;
+
+            area.classList.remove("ready");
+
+            area.classList.add("waiting");
+
+            area.innerHTML = `
+                <div class="reaction-text">
+                    WAIT FOR GREEN...
+                </div>
+            `;
+
+            const delay =
+                1500 + Math.random() * 3000;
+
+            timeout = setTimeout(() => {
+
+                ready = true;
+
+                startTime =
+                    performance.now();
+
+                area.classList.remove("waiting");
+
+                area.classList.add("ready");
+
+                area.innerHTML = `
+                    <div class="reaction-text">
+                        CLICK!!!
+                    </div>
+                `;
+
+            }, delay);
+
+            return;
+        }
+
+
+        if (!ready) {
+
+            clearTimeout(timeout);
+
+            area.classList.remove("waiting");
+
+            area.classList.add("ready");
+
+            area.innerHTML = `
+                <div class="reaction-text">
+                    TOO EARLY 😭<br>
+                    CLICK TO TRY AGAIN
+                </div>
+            `;
+
+            started = false;
+
+            return;
+        }
+
+
+        const reaction =
+            performance.now() - startTime;
+
+        const score =
+            Math.max(
+                1,
+                Math.round(
+                    1000 / reaction * 100
+                )
+            );
+
+        setScore(score);
+
+        saveScore(
+            "Reaction Rush",
+            score
+        );
+
+        area.classList.remove("ready");
+
+        area.innerHTML = `
+            <div class="reaction-text">
+                ${Math.round(reaction)} ms
+                <br><br>
+                Score: ${score}
+                <br><br>
+                CLICK TO PLAY AGAIN
+            </div>
+        `;
+
+        started = false;
+        ready = false;
+    });
+}
+
+
+/* =====================================================
+   TAP FRENZY
+===================================================== */
+
+function startTapGame() {
+
+    gameTitle.textContent =
+        "TAP FRENZY";
+
+    setScore(0);
+
+    gameContainer.innerHTML = `
+
+        <div class="game-box">
+
+            <h2>Tap Frenzy</h2>
+
+            <p>
+                10 seconds. Joto beshi tap, toto beshi score.
+            </p>
+
+            <div
+                id="tapCountdown"
+                class="tap-number"
+            >
+                10
+            </div>
+
+            <button
+                id="tapButton"
+                class="tap-button"
+            >
+                START
+            </button>
+
+        </div>
+
+    `;
+
+    const button =
+        document.getElementById("tapButton");
+
+    const countdown =
+        document.getElementById("tapCountdown");
+
+    let running = false;
+    let taps = 0;
+    let timeLeft = 10;
+
+    button.addEventListener("click", () => {
+
+        if (!running) {
+
+            running = true;
+            taps = 0;
+            timeLeft = 10;
+
+            button.textContent =
+                "TAP!";
+
+            countdown.textContent =
+                timeLeft;
+
+            setScore(0);
+
+            gameTimer =
+                setInterval(() => {
+
+                    timeLeft--;
+
+                    countdown.textContent =
+                        timeLeft;
+
+                    if (timeLeft <= 0) {
+
+                        clearInterval(gameTimer);
+
+                        gameTimer = null;
+
+                        running = false;
+
+                        button.textContent =
+                            "DONE!";
+
+                        countdown.textContent =
+                            taps;
+
+                        setScore(taps);
+
+                        saveScore(
+                            "Tap Frenzy",
+                            taps
+                        );
+
+                        setTimeout(() => {
+
+                            button.textContent =
+                                "START AGAIN";
+
+                        }, 700);
+                    }
+
+                }, 1000);
+
+            return;
+        }
+
+        taps++;
+
+        setScore(taps);
+    });
+}
+
+
+/* =====================================================
+   MEMORY MATCH
+===================================================== */
+
+function startMemoryGame() {
+
+    gameTitle.textContent =
+        "MEMORY MATCH";
+
+    setScore(0);
+
+    const emojis = [
+        "🔥", "🔥",
+        "⚡", "⚡",
+        "🎮", "🎮",
+        "🚀", "🚀",
+        "👑", "👑",
+        "💀", "💀",
+        "🐐", "🐐",
+        "🏆", "🏆"
+    ];
+
+    shuffle(emojis);
+
+    gameContainer.innerHTML = `
+
+        <div class="game-box">
+
+            <h2>Memory Match</h2>
+
+            <p>
+                Same emoji pair find koro.
+            </p>
+
+            <div
+                id="memoryGrid"
+                class="memory-grid"
+            ></div>
+
+        </div>
+
+    `;
+
+    const grid =
+        document.getElementById("memoryGrid");
+
+    let first = null;
+    let second = null;
+
+    let locked = false;
+
+    let moves = 0;
+    let matches = 0;
+
+    emojis.forEach((emoji, index) => {
+
+        const card =
+            document.createElement("button");
+
+        card.className =
+            "memory-card";
+
+        card.dataset.value =
+            emoji;
+
+        card.dataset.index =
+            index;
+
+        card.textContent =
+            emoji;
+
+        card.addEventListener(
+            "click",
+            () => {
+
+                if (
+                    locked ||
+                    card.classList.contains("matched") ||
+                    card === first
+                ) {
+                    return;
+                }
+
+                card.classList.add("flipped");
+
+                if (!first) {
+
+                    first = card;
+
+                    return;
+                }
+
+                second = card;
+
+                moves++;
+
+                locked = true;
+
+                if (
+                    first.dataset.value ===
+                    second.dataset.value
+                ) {
+
+                    first.classList.add(
+                        "matched"
+                    );
+
+                    second.classList.add(
+                        "matched"
+                    );
+
+                    matches++;
+
+                    locked = false;
+
+                    first = null;
+                    second = null;
+
+                    setScore(
+                        Math.max(
+                            1,
+                            1000 - moves * 30
+                        )
+                    );
+
+                    if (matches === 8) {
+
+                        const finalScore =
+                            Math.max(
+                                100,
+                                1000 - moves * 30
+                            );
+
+                        setScore(finalScore);
+
+                        saveScore(
+                            "Memory Match",
+                            finalScore
+                        );
+
+                        setTimeout(() => {
+
+                            showGameOver(
+                                "Memory Match Complete!",
+                                finalScore
+                            );
+
+                        }, 400);
+                    }
+
+                } else {
+
+                    setTimeout(() => {
+
+                        first.classList.remove(
+                            "flipped"
+                        );
+
+                        second.classList.remove(
+                            "flipped"
+                        );
+
+                        first = null;
+                        second = null;
+
+                        locked = false;
+
+                    }, 650);
+                }
+            }
+        );
+
+        grid.appendChild(card);
+    });
+}
+
+
+/* =====================================================
+   BLOCK DODGER
+===================================================== */
+
+function startDodgerGame() {
+
+    gameTitle.textContent =
+        "BLOCK DODGER";
+
+    setScore(0);
+
+    gameContainer.innerHTML = `
+
+        <div class="game-box">
+
+            <h2>Block Dodger</h2>
+
+            <p>
+                Falling blocks avoid koro.
+            </p>
+
+            <div
+                id="dodgerArea"
+                class="dodger-area"
+            >
+
+                <div
+                    id="dodgerPlayer"
+                    class="player"
+                ></div>
+
+            </div>
+
+            <div class="dodger-controls">
+
+                <button
+                    id="leftBtn"
+                    class="control-btn"
+                >
+                    ←
+                </button>
+
+                <button
+                    id="rightBtn"
+                    class="control-btn"
+                >
+                    →
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+    const area =
+        document.getElementById("dodgerArea");
+
+    const player =
+        document.getElementById("dodgerPlayer");
+
+    let playerX = 50;
+
+    let left = false;
+    let right = false;
+
+    let enemies = [];
+
+    let score = 0;
+
+    let running = true;
+
+    function updatePlayer() {
+
+        if (left) {
+            playerX -= 1.3;
+        }
+
+        if (right) {
+            playerX += 1.3;
+        }
+
+        playerX =
+            Math.max(
+                5,
+                Math.min(95, playerX)
+            );
+
+        player.style.left =
+            playerX + "%";
+    }
+
+
+    function createEnemy() {
+
+        if (!running) return;
+
+        const enemy =
+            document.createElement("div");
+
+        enemy.className =
+            "enemy";
+
+        enemy.style.left =
+            Math.random() * 90 + "%";
+
+        enemy.style.top =
+            "-40px";
+
+        area.appendChild(enemy);
+
+        enemies.push({
+            element: enemy,
+            y: -40,
+            speed:
+                2.2 + Math.random() * 2
+        });
+    }
+
+
+    function collision(a, b) {
+
+        const ar =
+            a.getBoundingClientRect();
+
+        const br =
+            b.getBoundingClientRect();
+
+        return !(
+            ar.right < br.left ||
+            ar.left > br.right ||
+            ar.bottom < br.top ||
+            ar.top > br.bottom
+        );
+    }
+
+
+    function loop() {
+
+        if (!running) {
+            return;
+        }
+
+        updatePlayer();
+
+        enemies.forEach(enemy => {
+
+            enemy.y += enemy.speed;
+
+            enemy.element.style.top =
+                enemy.y + "px";
+
+            if (
+                collision(
+                    player,
+                    enemy.element
+                )
+            ) {
+
+                running = false;
+
+                const finalScore =
+                    Math.floor(score);
+
+                setScore(finalScore);
+
+                saveScore(
+                    "Block Dodger",
+                    finalScore
+                );
+
+                showGameOver(
+                    "Game Over!",
+                    finalScore
+                );
+            }
+        });
+
+        enemies =
+            enemies.filter(enemy => {
+
+                if (
+                    enemy.y >
+                    area.clientHeight + 50
+                ) {
+
+                    enemy.element.remove();
+
+                    score += 10;
+
+                    setScore(score);
+
+                    return false;
+                }
+
+                return true;
+            });
+
+        animationFrame =
+            requestAnimationFrame(loop);
+    }
+
+
+    gameTimer =
+        setInterval(
+            createEnemy,
+            650
+        );
+
+    window.onkeydown =
+        event => {
+
+            if (
+                event.key === "ArrowLeft" ||
+                event.key.toLowerCase() === "a"
+            ) {
+                left = true;
+            }
+
+            if (
+                event.key === "ArrowRight" ||
+                event.key.toLowerCase() === "d"
+            ) {
+                right = true;
+            }
+        };
+
+
+    window.onkeyup =
+        event => {
+
+            if (
+                event.key === "ArrowLeft" ||
+                event.key.toLowerCase() === "a"
+            ) {
+                left = false;
+            }
+
+            if (
+                event.key === "ArrowRight" ||
+                event.key.toLowerCase() === "d"
+            ) {
+                right = false;
+            }
+        };
+
+
+    const leftBtn =
+        document.getElementById("leftBtn");
+
+    const rightBtn =
+        document.getElementById("rightBtn");
+
+
+    function pressLeft(e) {
+
+        e.preventDefault();
+
+        left = true;
+    }
+
+    function releaseLeft(e) {
+
+        e.preventDefault();
+
+        left = false;
+    }
+
+    function pressRight(e) {
+
+        e.preventDefault();
+
+        right = true;
+    }
+
+    function releaseRight(e) {
+
+        e.preventDefault();
+
+        right = false;
+    }
+
+
+    leftBtn.addEventListener(
+        "pointerdown",
+        pressLeft
     );
 
+    leftBtn.addEventListener(
+        "pointerup",
+        releaseLeft
+    );
+
+    leftBtn.addEventListener(
+        "pointercancel",
+        releaseLeft
+    );
+
+    leftBtn.addEventListener(
+        "pointerleave",
+        releaseLeft
+    );
+
+
+    rightBtn.addEventListener(
+        "pointerdown",
+        pressRight
+    );
+
+    rightBtn.addEventListener(
+        "pointerup",
+        releaseRight
+    );
+
+    rightBtn.addEventListener(
+        "pointercancel",
+        releaseRight
+    );
+
+    rightBtn.addEventListener(
+        "pointerleave",
+        releaseRight
+    );
+
+
+    loop();
+}
+
+
+/* =====================================================
+   GAME OVER
+===================================================== */
+
+function showGameOver(title, score) {
+
+    const box =
+        document.createElement("div");
+
+    box.className =
+        "game-over";
+
+    box.innerHTML = `
+
+        <h3>
+            ${title}
+        </h3>
+
+        <p>
+            ${playerName} — Score: ${score}
+        </p>
+
+        <button
+            class="restart-btn"
+            id="restartGameBtn"
+        >
+            PLAY AGAIN
+        </button>
+
+    `;
+
+    gameContainer
+        .querySelector(".game-box")
+        .appendChild(box);
+
+    document
+        .getElementById("restartGameBtn")
+        .addEventListener(
+            "click",
+            () => startGame(currentGame)
+        );
+}
+
+
+/* =====================================================
+   LEADERBOARD
+===================================================== */
+
+function openLeaderboard() {
+
+    renderLeaderboard();
+
+    leaderboardModal.classList.remove(
+        "hidden"
+    );
+}
+
+
+function closeLeaderboard() {
+
+    leaderboardModal.classList.add(
+        "hidden"
+    );
 }
 
 
 function renderLeaderboard() {
 
-    const body =
+    const list =
         document.getElementById(
-            "leaderboardBody"
+            "leaderboardList"
         );
 
     const scores =
-        getScores();
+        JSON.parse(
+            localStorage.getItem(scoresKey) || "[]"
+        );
 
-
-    body.innerHTML = "";
-
+    list.innerHTML = "";
 
     if (!scores.length) {
 
-        body.innerHTML = `
-            <div class="empty-leaderboard">
-                No scores yet. Be the first one on the board.
+        list.innerHTML = `
+            <div class="leader-row">
+                <div class="rank">—</div>
+                <div>
+                    <div class="leader-name">
+                        No scores yet
+                    </div>
+                    <div class="leader-game">
+                        Play a game first!
+                    </div>
+                </div>
+                <div class="leader-score">
+                    —
+                </div>
             </div>
         `;
 
         return;
     }
 
+    scores.forEach((entry, index) => {
 
-    scores.slice(0, 10)
-        .forEach((entry, index) => {
+        const row =
+            document.createElement("div");
 
-            const row =
-                document.createElement("div");
+        row.className =
+            "leader-row";
 
-            row.className =
-                "leader-row";
+        row.innerHTML = `
 
-            row.innerHTML = `
+            <div class="rank">
+                #${index + 1}
+            </div>
 
-                <span class="rank ${
-                    index < 3
-                        ? "top"
-                        : ""
-                }">
-                    ${index + 1}
-                </span>
-
-                <span class="leader-name">
+            <div>
+                <div class="leader-name">
                     ${escapeHTML(entry.name)}
-                </span>
+                </div>
 
-                <span class="leader-game">
+                <div class="leader-game">
                     ${escapeHTML(entry.game)}
-                </span>
+                </div>
+            </div>
 
-                <span class="leader-score">
-                    ${Number(entry.score).toLocaleString()}
-                </span>
+            <div class="leader-score">
+                ${entry.score}
+            </div>
 
-            `;
+        `;
 
-            body.appendChild(row);
-
-        });
-
+        list.appendChild(row);
+    });
 }
 
 
-function escapeHTML(value) {
+/* =====================================================
+   UTILITIES
+===================================================== */
 
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+function shuffle(array) {
 
-}
+    for (
+        let i = array.length - 1;
+        i > 0;
+        i--
+    ) {
 
-
-renderLeaderboard();
-
-
-/* =========================================================
-   CLEAR LEADERBOARD
-========================================================= */
-
-document.getElementById(
-    "clearScoresBtn"
-).addEventListener(
-    "click",
-    () => {
-
-        const confirmed =
-            confirm(
-                "Clear all local leaderboard scores?"
+        const j =
+            Math.floor(
+                Math.random() * (i + 1)
             );
 
-        if (!confirmed) {
-            return;
-        }
-
-        localStorage.removeItem(
-            SCORES_KEY
-        );
-
-        renderLeaderboard();
-
-        showToast(
-            "Leaderboard cleared."
-        );
-
+        [
+            array[i],
+            array[j]
+        ] = [
+            array[j],
+            array[i]
+        ];
     }
-);
 
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-let toastTimeout = null;
-
-function showToast(message) {
-
-    const toast =
-        document.getElementById("toast");
-
-    toast.textContent =
-        message;
-
-    toast.classList.add("show");
-
-    clearTimeout(toastTimeout);
-
-    toastTimeout =
-        setTimeout(() => {
-
-            toast.classList.remove(
-                "show"
-            );
-
-        }, 2200);
-
+    return array;
 }
 
 
-/* =========================================================
-   PREVENT ACCIDENTAL DOUBLE-TAP ZOOM
-   ON GAME CONTROLS
-========================================================= */
+function escapeHTML(text) {
 
-document.querySelectorAll(
-    "button"
-).forEach(button => {
+    const div =
+        document.createElement("div");
 
-    button.addEventListener(
-        "touchstart",
+    div.textContent =
+        text;
+
+    return div.innerHTML;
+}
+
+
+/* =====================================================
+   BUTTON EVENTS
+===================================================== */
+
+document
+    .getElementById("letsPlayBtn")
+    .addEventListener(
+        "click",
+        () => openNameModal()
+    );
+
+
+document
+    .getElementById("startPlayerBtn")
+    .addEventListener(
+        "click",
+        startPlayer
+    );
+
+
+playerNameInput
+    .addEventListener(
+        "keydown",
         event => {
 
-            if (
-                button.classList.contains(
-                    "big-click-button"
-                ) ||
-                button.closest(
-                    ".mobile-controls"
-                )
-            ) {
-                event.preventDefault();
-            }
+            if (event.key === "Enter") {
 
-        },
-        {
-            passive: false
+                event.preventDefault();
+
+                startPlayer();
+            }
         }
     );
 
-});
+
+document
+    .getElementById("closeNameModal")
+    .addEventListener(
+        "click",
+        closeNameModal
+    );
+
+
+document
+    .getElementById("backMenuBtn")
+    .addEventListener(
+        "click",
+        goToMenu
+    );
+
+
+document
+    .getElementById("leaderboardBtn")
+    .addEventListener(
+        "click",
+        openLeaderboard
+    );
+
+
+document
+    .getElementById("closeLeaderboard")
+    .addEventListener(
+        "click",
+        closeLeaderboard
+    );
+
+
+document
+    .getElementById("clearLeaderboard")
+    .addEventListener(
+        "click",
+        () => {
+
+            if (
+                confirm(
+                    "Clear all leaderboard scores?"
+                )
+            ) {
+
+                localStorage.removeItem(
+                    scoresKey
+                );
+
+                renderLeaderboard();
+            }
+        }
+    );
+
+
+/* =====================================================
+   GAME BUTTONS
+===================================================== */
+
+document
+    .querySelectorAll(".play-game-btn")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                const game =
+                    button.dataset.game;
+
+                startGame(game);
+            }
+        );
+    });
+
+
+/* =====================================================
+   LOAD SAVED PLAYER
+===================================================== */
+
+const savedPlayer =
+    localStorage.getItem(
+        "gamezone_player"
+    );
+
+if (savedPlayer) {
+
+    playerName = savedPlayer;
+
+    playerDisplay.textContent =
+        "PLAYER: " +
+        playerName.toUpperCase();
+}
+
+
+/* =====================================================
+   ESCAPE MODALS
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key !== "Escape") {
+            return;
+        }
+
+        closeNameModal();
+
+        closeLeaderboard();
+    }
+);
+```
