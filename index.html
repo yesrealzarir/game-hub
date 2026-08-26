@@ -11,402 +11,589 @@
 
 <body>
 
-    <!-- =========================
-         MAIN MENU
-    ========================== -->
+<div id="app">
 
-    <div id="menuScreen" class="screen">
-        <div class="background-glow"></div>
+    <!-- ================================
+         START SCREEN
+    ================================= -->
+
+    <section id="startScreen" class="screen active">
+        <div class="background-grid"></div>
+
+        <div class="start-card">
+
+            <div class="brand">
+                GAME<span>HUB</span>
+            </div>
+
+            <div class="eyebrow">
+                MINI GAME COLLECTION
+            </div>
+
+            <h1>
+                Ready to<br>
+                <span>play?</span>
+            </h1>
+
+            <p>
+                Enter your name and challenge yourself.
+                Score high, beat your records, and climb
+                your local leaderboard.
+            </p>
+
+            <div class="name-box">
+                <label for="playerName">YOUR NAME</label>
+
+                <input
+                    id="playerName"
+                    type="text"
+                    maxlength="18"
+                    autocomplete="off"
+                    placeholder="Enter your name..."
+                >
+
+                <button id="startButton" class="primary-button">
+                    LET'S PLAY
+                    <span>→</span>
+                </button>
+
+                <div id="nameError" class="input-error"></div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- ================================
+         GAME MENU
+    ================================= -->
+
+    <section id="menuScreen" class="screen">
 
         <header class="topbar">
-            <div class="logo">GAME<span>HUB</span></div>
-            <div id="playerDisplay" class="player-display">PLAYER</div>
+
+            <button id="menuBrand" class="brand-button">
+                GAME<span>HUB</span>
+            </button>
+
+            <div class="player-display">
+                <span>PLAYER</span>
+                <strong id="menuPlayerName">PLAYER</strong>
+            </div>
+
+            <button id="menuLeaderboardButton" class="top-button">
+                🏆
+                <span>Leaderboard</span>
+            </button>
+
         </header>
+
 
         <main class="menu-content">
 
-            <section class="hero">
-                <div class="eyebrow">LOCAL ARCADE</div>
+            <div class="menu-heading">
+                <div>
+                    <div class="eyebrow">CHOOSE YOUR CHALLENGE</div>
 
-                <h1>
-                    PLAY.<br>
-                    <span>COMPETE.</span>
-                </h1>
+                    <h2>
+                        What are we<br>
+                        playing?
+                    </h2>
+                </div>
 
                 <p>
-                    Pick a game, beat your high score, and climb the leaderboard.
+                    Pick a game and<br>
+                    chase a high score.
                 </p>
-            </section>
+            </div>
 
-            <!-- NAME ENTRY -->
 
-            <section id="nameSection" class="name-box">
+            <div class="game-grid">
 
-                <div class="section-label">PLAYER SETUP</div>
+                <!-- PERFECT CIRCLE -->
 
-                <h2>What's your name?</h2>
+                <article class="game-card circle-card">
 
-                <p>Enter your name before you start playing.</p>
-
-                <div class="name-input-row">
-                    <input
-                        id="playerNameInput"
-                        type="text"
-                        maxlength="16"
-                        placeholder="Your name"
-                        autocomplete="off"
-                    >
-
-                    <button id="saveNameButton" class="primary-button">
-                        Let's Play →
-                    </button>
-                </div>
-
-                <div id="nameError" class="error"></div>
-
-            </section>
-
-            <!-- GAME LIST -->
-
-            <section class="games-section">
-
-                <div class="section-heading">
-                    <div>
-                        <div class="section-label">ARCADE</div>
-                        <h2>Choose your game</h2>
+                    <div class="game-icon">
+                        ◯
                     </div>
 
-                    <div id="gameCount" class="game-count">3 GAMES</div>
-                </div>
-
-                <div class="games-grid">
-
-                    <!-- CLICK RUSH -->
-
-                    <article class="game-card purple-card">
-
-                        <div class="game-icon">⚡</div>
-
-                        <div class="game-info">
-                            <div class="game-number">01</div>
-
-                            <h3>Click Rush</h3>
-
-                            <p>
-                                Click as many times as possible before the timer runs out.
-                            </p>
-
-                            <div class="game-tags">
-                                <span>10 SEC</span>
-                                <span>REACTION</span>
-                            </div>
-                        </div>
-
-                        <button
-                            class="play-button"
-                            data-game="clickRush"
-                        >
-                            PLAY →
-                        </button>
-
-                    </article>
-
-
-                    <!-- REACTION -->
-
-                    <article class="game-card blue-card">
-
-                        <div class="game-icon">🎯</div>
-
-                        <div class="game-info">
-                            <div class="game-number">02</div>
-
-                            <h3>Reaction Test</h3>
-
-                            <p>
-                                Wait for the screen to turn green, then tap as fast as you can.
-                            </p>
-
-                            <div class="game-tags">
-                                <span>SPEED</span>
-                                <span>REACTION</span>
-                            </div>
-                        </div>
-
-                        <button
-                            class="play-button"
-                            data-game="reaction"
-                        >
-                            PLAY →
-                        </button>
-
-                    </article>
-
-
-                    <!-- SNAKE -->
-
-                    <article class="game-card green-card">
-
-                        <div class="game-icon">🐍</div>
-
-                        <div class="game-info">
-                            <div class="game-number">03</div>
-
-                            <h3>Snake</h3>
-
-                            <p>
-                                Eat the food, grow longer, and survive as long as possible.
-                            </p>
-
-                            <div class="game-tags">
-                                <span>SNAKE</span>
-                                <span>ARCADE</span>
-                            </div>
-                        </div>
-
-                        <button
-                            class="play-button"
-                            data-game="snake"
-                        >
-                            PLAY →
-                        </button>
-
-                    </article>
-
-                </div>
-            </section>
-
-
-            <!-- LEADERBOARD -->
-
-            <section class="leaderboard-section">
-
-                <div class="section-heading">
-                    <div>
-                        <div class="section-label">SCORES</div>
-                        <h2>Leaderboard</h2>
+                    <div class="game-number">
+                        01
                     </div>
 
-                    <button id="clearScoresButton" class="small-button">
-                        Clear scores
+                    <h3>Perfect Circle</h3>
+
+                    <p>
+                        Draw the most accurate circle you can.
+                        How close can you get to perfection?
+                    </p>
+
+                    <div class="game-meta">
+                        <span>🎯 ACCURACY</span>
+                        <span>0–100</span>
+                    </div>
+
+                    <button class="game-button" data-game="circle">
+                        PLAY GAME →
                     </button>
-                </div>
 
-                <div id="leaderboard" class="leaderboard">
-                    <!-- JS fills this -->
-                </div>
+                </article>
 
-            </section>
+
+                <!-- REACTION -->
+
+                <article class="game-card reaction-card">
+
+                    <div class="game-icon">
+                        ⚡
+                    </div>
+
+                    <div class="game-number">
+                        02
+                    </div>
+
+                    <h3>Reaction Test</h3>
+
+                    <p>
+                        Wait for the signal, then click as
+                        quickly as possible.
+                    </p>
+
+                    <div class="game-meta">
+                        <span>⚡ SPEED</span>
+                        <span>MS</span>
+                    </div>
+
+                    <button class="game-button" data-game="reaction">
+                        PLAY GAME →
+                    </button>
+
+                </article>
+
+
+                <!-- TARGET RUSH -->
+
+                <article class="game-card target-card">
+
+                    <div class="game-icon">
+                        ✦
+                    </div>
+
+                    <div class="game-number">
+                        03
+                    </div>
+
+                    <h3>Target Rush</h3>
+
+                    <p>
+                        Tap as many targets as possible before
+                        the timer runs out.
+                    </p>
+
+                    <div class="game-meta">
+                        <span>🎯 SPEED</span>
+                        <span>30 SEC</span>
+                    </div>
+
+                    <button class="game-button" data-game="target">
+                        PLAY GAME →
+                    </button>
+
+                </article>
+
+
+                <!-- MEMORY -->
+
+                <article class="game-card memory-card">
+
+                    <div class="game-icon">
+                        ◆
+                    </div>
+
+                    <div class="game-number">
+                        04
+                    </div>
+
+                    <h3>Memory Tiles</h3>
+
+                    <p>
+                        Remember the highlighted tiles and
+                        repeat the pattern.
+                    </p>
+
+                    <div class="game-meta">
+                        <span>🧠 MEMORY</span>
+                        <span>LEVELS</span>
+                    </div>
+
+                    <button class="game-button" data-game="memory">
+                        PLAY GAME →
+                    </button>
+
+                </article>
+
+            </div>
 
         </main>
 
-        <footer>
-            GAMEHUB • PLAY LOCAL • HAVE FUN
-        </footer>
-    </div>
+    </section>
 
 
-    <!-- =========================
-         GAME SCREEN
-    ========================== -->
+    <!-- ================================
+         PERFECT CIRCLE
+    ================================= -->
 
-    <div id="gameScreen" class="screen hidden">
+    <section id="circleScreen" class="screen game-screen">
 
         <header class="game-topbar">
 
-            <button id="backButton" class="back-button">
-                ← Menu
+            <button class="back-button" data-back="menu">
+                ← MENU
             </button>
 
-            <div id="gameTitle" class="game-title">
-                GAME
+            <div class="game-title">
+                PERFECT <span>CIRCLE</span>
             </div>
 
-            <div id="scoreDisplay" class="score-display">
-                SCORE: 0
+            <div class="score-display">
+                SCORE <strong id="circleScore">—</strong>
             </div>
 
         </header>
 
 
-        <!-- CLICK RUSH -->
+        <main class="game-area">
 
-        <section id="clickRushGame" class="game-view hidden">
+            <div class="game-instructions">
 
-            <div class="game-intro">
-                <div class="eyebrow">CLICK RUSH</div>
-                <h1>CLICK IT.</h1>
-                <p>You've got 10 seconds. Get as many clicks as possible.</p>
-            </div>
-
-            <div class="click-stats">
-                <div>
-                    <span>TIME</span>
-                    <strong id="clickTime">10</strong>
+                <div class="eyebrow">
+                    DRAWING CHALLENGE
                 </div>
 
-                <div>
-                    <span>CLICKS</span>
-                    <strong id="clickScore">0</strong>
-                </div>
-            </div>
+                <h2>
+                    Draw a perfect circle.
+                </h2>
 
-            <button id="clickTarget" class="click-target">
-                CLICK!
-            </button>
-
-            <div id="clickMessage" class="game-message">
-                Press the button to start.
-            </div>
-
-            <button id="clickRestart" class="secondary-button">
-                Restart
-            </button>
-
-        </section>
-
-
-        <!-- REACTION -->
-
-        <section id="reactionGame" class="game-view hidden">
-
-            <div class="game-intro">
-                <div class="eyebrow">REACTION TEST</div>
-                <h1>HOW FAST?</h1>
-                <p id="reactionInstruction">
-                    Press start and wait for green.
+                <p>
+                    Touch or click the canvas and draw
+                    one complete circle. Release when finished.
                 </p>
+
             </div>
 
-            <div id="reactionBox" class="reaction-box waiting">
 
-                <div id="reactionText">
-                    READY?
+            <div class="circle-stats">
+
+                <div>
+                    <span>ACCURACY</span>
+                    <strong id="circleAccuracy">—</strong>
+                </div>
+
+                <div>
+                    <span>RADIUS</span>
+                    <strong id="circleRadius">—</strong>
+                </div>
+
+                <div>
+                    <span>POINTS</span>
+                    <strong id="circlePoints">0</strong>
                 </div>
 
             </div>
 
-            <div class="reaction-best">
-                Best: <strong id="reactionBest">—</strong>
-            </div>
 
-            <button id="reactionStart" class="primary-button">
-                Start Test
-            </button>
+            <div id="circleCanvasWrap" class="circle-canvas-wrap">
 
-            <button id="reactionRestart" class="secondary-button">
-                Restart
-            </button>
+                <canvas id="circleCanvas"></canvas>
 
-        </section>
-
-
-        <!-- SNAKE -->
-
-        <section id="snakeGame" class="game-view hidden">
-
-            <div class="game-intro">
-                <div class="eyebrow">SNAKE</div>
-                <h1>GROW.</h1>
-                <p>Eat the red food. Don't hit yourself or the walls.</p>
-            </div>
-
-            <div class="snake-score">
-                SCORE: <strong id="snakeScore">0</strong>
-            </div>
-
-            <div class="snake-wrapper">
-
-                <canvas
-                    id="snakeCanvas"
-                    width="400"
-                    height="400"
-                ></canvas>
+                <div id="circleHint">
+                    DRAW HERE
+                </div>
 
             </div>
 
-            <!-- Mobile controls -->
 
-            <div class="mobile-controls">
+            <div class="game-actions">
 
-                <button class="control-button empty"></button>
-
-                <button
-                    class="control-button"
-                    data-direction="up"
-                >
-                    ▲
+                <button id="circleClearButton" class="secondary-button">
+                    CLEAR
                 </button>
 
-                <button class="control-button empty"></button>
-
-                <button
-                    class="control-button"
-                    data-direction="left"
-                >
-                    ◀
-                </button>
-
-                <button
-                    class="control-button"
-                    data-direction="down"
-                >
-                    ▼
-                </button>
-
-                <button
-                    class="control-button"
-                    data-direction="right"
-                >
-                    ▶
+                <button id="circleFinishButton" class="primary-button">
+                    FINISH DRAWING
                 </button>
 
             </div>
 
-            <div id="snakeMessage" class="game-message">
-                Use the buttons or arrow keys.
+            <div id="circleResult" class="result-message"></div>
+
+        </main>
+
+    </section>
+
+
+    <!-- ================================
+         REACTION
+    ================================= -->
+
+    <section id="reactionScreen" class="screen game-screen">
+
+        <header class="game-topbar">
+
+            <button class="back-button" data-back="menu">
+                ← MENU
+            </button>
+
+            <div class="game-title">
+                REACTION <span>TEST</span>
             </div>
 
-            <button id="snakeRestart" class="secondary-button">
-                Restart Snake
+            <div class="score-display">
+                BEST <strong id="reactionBest">—</strong>
+            </div>
+
+        </header>
+
+
+        <main class="game-area centered-game">
+
+            <div class="game-instructions">
+
+                <div class="eyebrow">
+                    SPEED CHALLENGE
+                </div>
+
+                <h2>
+                    How fast are you?
+                </h2>
+
+                <p id="reactionInstruction">
+                    Press the button and wait for green.
+                </p>
+
+            </div>
+
+
+            <button id="reactionButton" class="reaction-button waiting">
+                START
             </button>
 
-        </section>
 
-    </div>
+            <div class="big-score" id="reactionScore">
+                —
+            </div>
+
+            <div id="reactionResult" class="result-message"></div>
+
+        </main>
+
+    </section>
 
 
-    <!-- SCORE MODAL -->
+    <!-- ================================
+         TARGET RUSH
+    ================================= -->
 
-    <div id="scoreModal" class="modal hidden">
+    <section id="targetScreen" class="screen game-screen">
 
-        <div class="modal-card">
+        <header class="game-topbar">
 
-            <div class="modal-icon">🏆</div>
-
-            <div class="eyebrow">GAME OVER</div>
-
-            <h2 id="modalTitle">Nice!</h2>
-
-            <p>
-                Your score:
-                <strong id="modalScore">0</strong>
-            </p>
-
-            <button id="modalMenuButton" class="primary-button">
-                Back to Menu
+            <button class="back-button" data-back="menu">
+                ← MENU
             </button>
 
-            <button id="modalReplayButton" class="secondary-button">
-                Play Again
+            <div class="game-title">
+                TARGET <span>RUSH</span>
+            </div>
+
+            <div class="score-display">
+                TIME <strong id="targetTimer">30</strong>
+            </div>
+
+        </header>
+
+
+        <main class="target-game-area">
+
+            <div class="target-info">
+                <div>
+                    <span>SCORE</span>
+                    <strong id="targetScore">0</strong>
+                </div>
+
+                <div>
+                    <span>HITS</span>
+                    <strong id="targetHits">0</strong>
+                </div>
+            </div>
+
+
+            <div id="targetBoard" class="target-board">
+
+                <div id="targetStartOverlay" class="target-overlay">
+
+                    <h2>Target Rush</h2>
+
+                    <p>
+                        Hit every target as quickly as possible.
+                    </p>
+
+                    <button id="targetStartButton" class="primary-button">
+                        START GAME →
+                    </button>
+
+                </div>
+
+                <button id="target" class="target hidden">
+                    +
+                </button>
+
+            </div>
+
+        </main>
+
+    </section>
+
+
+    <!-- ================================
+         MEMORY
+    ================================= -->
+
+    <section id="memoryScreen" class="screen game-screen">
+
+        <header class="game-topbar">
+
+            <button class="back-button" data-back="menu">
+                ← MENU
             </button>
 
-        </div>
+            <div class="game-title">
+                MEMORY <span>TILES</span>
+            </div>
 
-    </div>
+            <div class="score-display">
+                LEVEL <strong id="memoryLevel">1</strong>
+            </div>
+
+        </header>
 
 
-    <script src="script.js"></script>
+        <main class="game-area centered-game">
+
+            <div class="game-instructions">
+
+                <div class="eyebrow">
+                    MEMORY CHALLENGE
+                </div>
+
+                <h2>
+                    Remember the pattern.
+                </h2>
+
+                <p id="memoryInstruction">
+                    Watch carefully...
+                </p>
+
+            </div>
+
+
+            <div id="memoryGrid" class="memory-grid">
+
+                <button class="memory-tile" data-index="0"></button>
+                <button class="memory-tile" data-index="1"></button>
+                <button class="memory-tile" data-index="2"></button>
+                <button class="memory-tile" data-index="3"></button>
+                <button class="memory-tile" data-index="4"></button>
+                <button class="memory-tile" data-index="5"></button>
+                <button class="memory-tile" data-index="6"></button>
+                <button class="memory-tile" data-index="7"></button>
+                <button class="memory-tile" data-index="8"></button>
+
+            </div>
+
+
+            <button id="memoryStartButton" class="primary-button">
+                START LEVEL
+            </button>
+
+            <div id="memoryResult" class="result-message"></div>
+
+        </main>
+
+    </section>
+
+
+    <!-- ================================
+         LEADERBOARD
+    ================================= -->
+
+    <section id="leaderboardScreen" class="screen">
+
+        <header class="topbar">
+
+            <button class="back-button" data-back="menu">
+                ← MENU
+            </button>
+
+            <div class="brand">
+                GAME<span>HUB</span>
+            </div>
+
+            <div></div>
+
+        </header>
+
+
+        <main class="leaderboard-content">
+
+            <div class="menu-heading">
+
+                <div>
+                    <div class="eyebrow">LOCAL RECORDS</div>
+
+                    <h2>
+                        Leaderboard.
+                    </h2>
+                </div>
+
+                <button id="clearLeaderboardButton" class="danger-button">
+                    CLEAR RECORDS
+                </button>
+
+            </div>
+
+
+            <div class="leaderboard-tabs">
+
+                <button class="leader-tab active" data-board="circle">
+                    ◯ Circle
+                </button>
+
+                <button class="leader-tab" data-board="reaction">
+                    ⚡ Reaction
+                </button>
+
+                <button class="leader-tab" data-board="target">
+                    ✦ Target
+                </button>
+
+                <button class="leader-tab" data-board="memory">
+                    ◆ Memory
+                </button>
+
+            </div>
+
+
+            <div id="leaderboardList" class="leaderboard-list"></div>
+
+        </main>
+
+    </section>
+
+</div>
+
+<script src="script.js"></script>
 
 </body>
 </html>
