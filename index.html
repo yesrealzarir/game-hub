@@ -2,303 +2,247 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>VOID ARCADE</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div class="background">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="grid"></div>
-    </div>
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
 
-    <!-- NAVBAR -->
+    <!-- =========================
+         HEADER
+    ========================== -->
 
-    <nav>
-        <div class="logo">
-            VOID<span>ARCADE</span>
-        </div>
+    <header class="topbar">
 
-        <div class="nav-links">
-            <a href="#games">Games</a>
-            <a href="#leaderboards">Leaderboards</a>
-        </div>
-
-        <button class="profile-btn" onclick="changePlayer()">
-            <span id="playerAvatar">?</span>
-            <span id="navPlayer">Player</span>
-        </button>
-    </nav>
-
-
-    <!-- HERO -->
-
-    <header class="hero">
-
-        <div class="hero-badge">
-            <span class="live-dot"></span>
-            BROWSER ARCADE
-        </div>
-
-        <h1>
-            PLAY.
-            <span>COMPETE.</span>
-            DOMINATE.
-        </h1>
-
-        <p>
-            Ekhan theke game khelo, score banao,
-            ar leaderboard-e nijer naam tule dao. 🎮
-        </p>
-
-        <div class="hero-buttons">
-            <a href="#games" class="primary-btn">
-                Explore Games →
-            </a>
-
-            <a href="#leaderboards" class="secondary-btn">
-                View Leaderboards
-            </a>
-        </div>
-
-        <div class="stats">
-            <div>
-                <strong>03</strong>
-                <span>GAMES</span>
-            </div>
+        <div class="brand">
+            <div class="brand-icon">V</div>
 
             <div>
-                <strong>∞</strong>
-                <span>ATTEMPTS</span>
+                <h1>VOID ARCADE</h1>
+                <span>PLAY • COMPETE • DOMINATE</span>
             </div>
+        </div>
 
-            <div>
-                <strong>100%</strong>
-                <span>FREE</span>
-            </div>
+        <div class="player-area">
+            <div class="player-name" id="playerDisplay">PLAYER</div>
+
+            <button class="small-btn" id="changeName">
+                Change
+            </button>
         </div>
 
     </header>
 
 
-    <!-- GAMES -->
+    <!-- =========================
+         HERO
+    ========================== -->
+
+    <section class="hero">
+
+        <div class="hero-badge">
+            🎮 ONLINE ARCADE
+        </div>
+
+        <h2>
+            Pick a game.<br>
+            <span>Beat the score.</span>
+        </h2>
+
+        <p>
+            Ekta website-e multiple mini games.
+            Mobile-eo khela jabe. No account, no Supabase.
+        </p>
+
+    </section>
+
+
+    <!-- =========================
+         GAME SELECTION
+    ========================== -->
 
     <main>
 
-        <section id="games">
+        <section class="games-section">
 
-            <div class="section-heading">
+            <div class="section-title">
                 <div>
-                    <small>THE ARCADE</small>
-                    <h2>Choose your game.</h2>
+                    <span>ARCADE</span>
+                    <h3>Choose your game</h3>
                 </div>
 
-                <p>
-                    Pick one. Play hard. Beat the score.
-                </p>
+                <div class="game-count">
+                    05 GAMES
+                </div>
             </div>
 
 
             <div class="games-grid">
 
-                <!-- REACTION -->
+                <button class="game-card snake-card" data-game="snake">
+                    <div class="game-icon">🐍</div>
+                    <div class="game-info">
+                        <h4>Snake</h4>
+                        <p>Eat. Grow. Don't crash.</p>
+                    </div>
+                    <div class="play-arrow">→</div>
+                </button>
 
-                <article class="game-card reaction">
 
+                <button class="game-card ttt-card" data-game="tictactoe">
+                    <div class="game-icon">⭕</div>
+                    <div class="game-info">
+                        <h4>Tic-Tac-Toe</h4>
+                        <p>Beat the computer.</p>
+                    </div>
+                    <div class="play-arrow">→</div>
+                </button>
+
+
+                <button class="game-card reaction-card" data-game="reaction">
                     <div class="game-icon">⚡</div>
-
-                    <div class="game-number">01</div>
-
-                    <h3>Reaction Rush</h3>
-
-                    <p>
-                        Test your reaction speed.
-                        Wait for the signal and click
-                        as quickly as possible.
-                    </p>
-
                     <div class="game-info">
-                        <span>⚡ SPEED</span>
-                        <span>★★★★★</span>
+                        <h4>Reaction Test</h4>
+                        <p>How fast are you?</p>
                     </div>
-
-                    <button onclick="openGame('reaction')">
-                        PLAY NOW →
-                    </button>
-
-                </article>
+                    <div class="play-arrow">→</div>
+                </button>
 
 
-                <!-- DODGE -->
-
-                <article class="game-card dodge">
-
-                    <div class="game-icon">◆</div>
-
-                    <div class="game-number">02</div>
-
-                    <h3>Neon Dodge</h3>
-
-                    <p>
-                        Move your player and survive
-                        as long as possible while
-                        obstacles come faster and faster.
-                    </p>
-
+                <button class="game-card click-card" data-game="clickrush">
+                    <div class="game-icon">🔥</div>
                     <div class="game-info">
-                        <span>🎯 SURVIVAL</span>
-                        <span>★★★★☆</span>
+                        <h4>Click Rush</h4>
+                        <p>Click as fast as possible.</p>
                     </div>
-
-                    <button onclick="openGame('dodge')">
-                        PLAY NOW →
-                    </button>
-
-                </article>
+                    <div class="play-arrow">→</div>
+                </button>
 
 
-                <!-- SPACE -->
-
-                <article class="game-card space">
-
-                    <div class="game-icon">✦</div>
-
-                    <div class="game-number">03</div>
-
-                    <h3>Void Blaster</h3>
-
-                    <p>
-                        Destroy incoming enemies,
-                        survive the waves and chase
-                        the highest score.
-                    </p>
-
+                <button class="game-card memory-card" data-game="memory">
+                    <div class="game-icon">🧠</div>
                     <div class="game-info">
-                        <span>🚀 ACTION</span>
-                        <span>★★★★★</span>
+                        <h4>Memory Match</h4>
+                        <p>Find every matching pair.</p>
                     </div>
-
-                    <button onclick="openGame('space')">
-                        PLAY NOW →
-                    </button>
-
-                </article>
+                    <div class="play-arrow">→</div>
+                </button>
 
             </div>
 
         </section>
 
 
-        <!-- LEADERBOARDS -->
+        <!-- =========================
+             LEADERBOARD
+        ========================== -->
 
-        <section id="leaderboards">
+        <section class="leaderboard-section">
 
-            <div class="section-heading">
+            <div class="section-title">
                 <div>
-                    <small>HALL OF FAME</small>
-                    <h2>Leaderboards.</h2>
+                    <span>HALL OF FAME</span>
+                    <h3>Local leaderboard</h3>
                 </div>
-
-                <button class="clear-btn" onclick="clearScores()">
-                    Reset Scores
-                </button>
             </div>
-
 
             <div class="leaderboard-tabs">
 
-                <button
-                    class="tab active"
-                    onclick="showLeaderboard('reaction', this)">
-                    Reaction Rush
+                <button class="leader-tab active" data-board="snake">
+                    Snake
                 </button>
 
-                <button
-                    class="tab"
-                    onclick="showLeaderboard('dodge', this)">
-                    Neon Dodge
+                <button class="leader-tab" data-board="reaction">
+                    Reaction
                 </button>
 
-                <button
-                    class="tab"
-                    onclick="showLeaderboard('space', this)">
-                    Void Blaster
+                <button class="leader-tab" data-board="clickrush">
+                    Click Rush
+                </button>
+
+                <button class="leader-tab" data-board="memory">
+                    Memory
                 </button>
 
             </div>
 
+            <div id="leaderboard" class="leaderboard"></div>
 
-            <div class="leaderboard">
-
-                <div class="leaderboard-header">
-                    <span>#</span>
-                    <span>PLAYER</span>
-                    <span>SCORE</span>
-                </div>
-
-                <div id="leaderboardList"></div>
-
-            </div>
+            <p class="leader-note">
+                Scores are saved locally on this device.
+            </p>
 
         </section>
 
     </main>
 
 
-    <!-- PLAYER MODAL -->
+    <!-- =========================
+         GAME MODAL
+    ========================== -->
 
-    <div id="playerModal" class="modal">
+    <div id="gameModal" class="modal hidden">
 
-        <div class="modal-box">
+        <div class="modal-backdrop"></div>
 
-            <button
-                class="close"
-                onclick="closePlayerModal()">
-                ×
-            </button>
+        <div class="game-window">
 
-            <div class="modal-icon">👤</div>
+            <div class="game-header">
 
-            <h2>What's your name?</h2>
+                <div>
+                    <span id="gameCategory">GAME</span>
+                    <h2 id="gameTitle">Game</h2>
+                </div>
 
-            <p>
-                Ei naam leaderboard-e show korbe.
-            </p>
+                <button id="closeGame" class="close-btn">
+                    ×
+                </button>
 
-            <input
-                id="playerInput"
-                maxlength="18"
-                placeholder="Enter nickname..."
-                onkeydown="handleNameKey(event)"
-            >
+            </div>
 
-            <button
-                class="modal-btn"
-                onclick="savePlayer()">
-                ENTER ARCADE →
-            </button>
+
+            <div id="gameStats" class="game-stats"></div>
+
+
+            <div id="gameContent" class="game-content"></div>
 
         </div>
 
     </div>
 
 
-    <!-- GAME MODAL -->
+    <!-- =========================
+         NAME MODAL
+    ========================== -->
 
-    <div id="gameModal" class="modal">
+    <div id="nameModal" class="name-modal">
 
-        <div class="game-window">
+        <div class="name-card">
 
-            <button
-                class="close"
-                onclick="closeGame()">
-                ×
+            <div class="brand-icon big">V</div>
+
+            <h2>Welcome to VOID.</h2>
+
+            <p>
+                Choose a player name to start playing.
+            </p>
+
+            <input
+                id="playerInput"
+                maxlength="16"
+                placeholder="Your name"
+                autocomplete="off"
+            >
+
+            <button id="savePlayer" class="primary-btn">
+                Enter Arcade →
             </button>
-
-            <div id="gameContent"></div>
 
         </div>
 
@@ -306,19 +250,8 @@
 
 
     <footer>
-
-        <div class="footer-logo">
-            VOID<span>ARCADE</span>
-        </div>
-
-        <p>
-            Made for bored people who want to compete. 💀
-        </p>
-
-        <small>
-            NO ACCOUNT • NO DATABASE • JUST GAMES
-        </small>
-
+        <strong>VOID ARCADE</strong>
+        <span>Made for people who are bored 💀</span>
     </footer>
 
 
