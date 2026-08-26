@@ -4,244 +4,397 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>VOID ARCADE</title>
+    <title>ARCADE HUB</title>
 
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 
 <body>
 
-    <div class="background-glow glow-one"></div>
-    <div class="background-glow glow-two"></div>
+<div class="app">
 
-    <!-- =========================
-         HEADER
-    ========================== -->
-
-    <header class="topbar">
-
+    <!-- NAVBAR -->
+    <nav class="navbar">
         <div class="brand">
-            <div class="brand-icon">V</div>
+            <span class="brand-icon">◆</span>
+            ARCADE
+        </div>
 
-            <div>
-                <h1>VOID ARCADE</h1>
-                <span>PLAY • COMPETE • DOMINATE</span>
+        <div class="nav-right">
+            <span id="playerDisplay">PLAYER</span>
+            <button id="changeNameBtn">Change Name</button>
+        </div>
+    </nav>
+
+
+    <!-- HOME -->
+    <section id="homeScreen" class="screen active">
+
+        <div class="hero">
+            <div class="hero-badge">ONLINE ARCADE</div>
+
+            <h1>
+                PLAY.<br>
+                <span>COMPETE.</span><br>
+                DOMINATE.
+            </h1>
+
+            <p>
+                Kichu simple game khelo, score banao,
+                ar leaderboard-e top e jao.
+            </p>
+
+            <div class="hero-buttons">
+                <button class="primary-btn" id="playNowBtn">
+                    PLAY NOW →
+                </button>
+
+                <button class="secondary-btn" id="leaderboardBtn">
+                    LEADERBOARD
+                </button>
             </div>
         </div>
 
-        <div class="player-area">
-            <div class="player-name" id="playerDisplay">PLAYER</div>
 
-            <button class="small-btn" id="changeName">
-                Change
-            </button>
-        </div>
+        <div class="games-section">
 
-    </header>
-
-
-    <!-- =========================
-         HERO
-    ========================== -->
-
-    <section class="hero">
-
-        <div class="hero-badge">
-            🎮 ONLINE ARCADE
-        </div>
-
-        <h2>
-            Pick a game.<br>
-            <span>Beat the score.</span>
-        </h2>
-
-        <p>
-            Ekta website-e multiple mini games.
-            Mobile-eo khela jabe. No account, no Supabase.
-        </p>
-
-    </section>
-
-
-    <!-- =========================
-         GAME SELECTION
-    ========================== -->
-
-    <main>
-
-        <section class="games-section">
-
-            <div class="section-title">
+            <div class="section-head">
                 <div>
-                    <span>ARCADE</span>
-                    <h3>Choose your game</h3>
+                    <small>CHOOSE YOUR GAME</small>
+                    <h2>Games</h2>
                 </div>
 
-                <div class="game-count">
-                    05 GAMES
-                </div>
+                <span id="gameCount">4 GAMES</span>
             </div>
 
 
             <div class="games-grid">
 
-                <button class="game-card snake-card" data-game="snake">
-                    <div class="game-icon">🐍</div>
-                    <div class="game-info">
-                        <h4>Snake</h4>
-                        <p>Eat. Grow. Don't crash.</p>
-                    </div>
-                    <div class="play-arrow">→</div>
-                </button>
-
-
-                <button class="game-card ttt-card" data-game="tictactoe">
-                    <div class="game-icon">⭕</div>
-                    <div class="game-info">
-                        <h4>Tic-Tac-Toe</h4>
-                        <p>Beat the computer.</p>
-                    </div>
-                    <div class="play-arrow">→</div>
-                </button>
-
-
-                <button class="game-card reaction-card" data-game="reaction">
+                <!-- GAME 1 -->
+                <article class="game-card purple">
                     <div class="game-icon">⚡</div>
+
                     <div class="game-info">
-                        <h4>Reaction Test</h4>
-                        <p>How fast are you?</p>
+                        <span class="game-type">REACTION</span>
+
+                        <h3>Reaction Rush</h3>
+
+                        <p>
+                            Screen green howar sathe sathe
+                            tap koro. Joto fast, toto beshi score.
+                        </p>
                     </div>
-                    <div class="play-arrow">→</div>
-                </button>
+
+                    <button class="game-btn" data-game="reaction">
+                        PLAY →
+                    </button>
+                </article>
 
 
-                <button class="game-card click-card" data-game="clickrush">
-                    <div class="game-icon">🔥</div>
+                <!-- GAME 2 -->
+                <article class="game-card blue">
+                    <div class="game-icon">🎯</div>
+
                     <div class="game-info">
-                        <h4>Click Rush</h4>
-                        <p>Click as fast as possible.</p>
+                        <span class="game-type">TARGET</span>
+
+                        <h3>Target Tap</h3>
+
+                        <p>
+                            Moving target-e tap kore
+                            30 seconds-er moddhe maximum score koro.
+                        </p>
                     </div>
-                    <div class="play-arrow">→</div>
-                </button>
+
+                    <button class="game-btn" data-game="target">
+                        PLAY →
+                    </button>
+                </article>
 
 
-                <button class="game-card memory-card" data-game="memory">
+                <!-- GAME 3 -->
+                <article class="game-card green">
                     <div class="game-icon">🧠</div>
+
                     <div class="game-info">
-                        <h4>Memory Match</h4>
-                        <p>Find every matching pair.</p>
+                        <span class="game-type">MEMORY</span>
+
+                        <h3>Memory Match</h3>
+
+                        <p>
+                            Cards memorize kore same pair
+                            khuje ber koro.
+                        </p>
                     </div>
-                    <div class="play-arrow">→</div>
+
+                    <button class="game-btn" data-game="memory">
+                        PLAY →
+                    </button>
+                </article>
+
+
+                <!-- GAME 4 -->
+                <article class="game-card red">
+                    <div class="game-icon">🔢</div>
+
+                    <div class="game-info">
+                        <span class="game-type">NUMBER</span>
+
+                        <h3>Number Rush</h3>
+
+                        <p>
+                            Number sequence dekho ar
+                            correct answer select koro.
+                        </p>
+                    </div>
+
+                    <button class="game-btn" data-game="number">
+                        PLAY →
+                    </button>
+                </article>
+
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- GAME SCREEN -->
+    <section id="gameScreen" class="screen">
+
+        <div class="game-header">
+
+            <button id="backBtn" class="back-btn">
+                ← BACK
+            </button>
+
+            <div>
+                <small id="activeGameType">GAME</small>
+                <h2 id="activeGameTitle">Game</h2>
+            </div>
+
+            <div class="score-box">
+                <small>SCORE</small>
+                <strong id="scoreDisplay">0</strong>
+            </div>
+
+        </div>
+
+
+        <!-- REACTION -->
+        <div id="reactionGame" class="game-board hidden-game">
+
+            <div class="game-intro">
+                <span>REACTION RUSH</span>
+                <h2>How fast are you?</h2>
+
+                <p>
+                    Start button press koro.
+                    Screen change hole immediately tap koro.
+                </p>
+
+                <button class="primary-btn start-game" data-start="reaction">
+                    START GAME
+                </button>
+            </div>
+
+            <button id="reactionArea" class="reaction-area">
+                WAIT...
+            </button>
+
+            <div class="mobile-hint">
+                📱 Mobile-e screen-er ei area-te tap koro
+            </div>
+
+        </div>
+
+
+        <!-- TARGET -->
+        <div id="targetGame" class="game-board hidden-game">
+
+            <div class="game-top-info">
+                <span>TIME</span>
+                <strong id="targetTimer">30</strong>
+            </div>
+
+            <button class="primary-btn start-game" data-start="target">
+                START GAME
+            </button>
+
+            <div id="targetArea" class="target-area">
+                <div id="targetCircle"></div>
+            </div>
+
+            <div class="mobile-hint">
+                🎯 Target-e tap koro
+            </div>
+
+        </div>
+
+
+        <!-- MEMORY -->
+        <div id="memoryGame" class="game-board hidden-game">
+
+            <div class="game-intro">
+                <span>MEMORY MATCH</span>
+                <h2>Find the pairs.</h2>
+
+                <p>
+                    Same icon-er duita card khuje ber koro.
+                </p>
+
+                <button class="primary-btn start-game" data-start="memory">
+                    START GAME
+                </button>
+            </div>
+
+            <div id="memoryGrid" class="memory-grid"></div>
+
+        </div>
+
+
+        <!-- NUMBER -->
+        <div id="numberGame" class="game-board hidden-game">
+
+            <div class="game-intro">
+
+                <span>NUMBER RUSH</span>
+
+                <h2 id="numberQuestion">
+                    Press start.
+                </h2>
+
+                <p id="numberInstruction">
+                    Correct answer select koro.
+                </p>
+
+                <button class="primary-btn start-game" data-start="number">
+                    START GAME
                 </button>
 
             </div>
 
-        </section>
+            <div id="numberOptions" class="number-options"></div>
+
+        </div>
+
+    </section>
 
 
-        <!-- =========================
-             LEADERBOARD
-        ========================== -->
+    <!-- LEADERBOARD -->
+    <section id="leaderboardScreen" class="screen">
 
-        <section class="leaderboard-section">
+        <div class="leaderboard-header">
 
-            <div class="section-title">
-                <div>
-                    <span>HALL OF FAME</span>
-                    <h3>Local leaderboard</h3>
-                </div>
+            <button id="leaderboardBackBtn" class="back-btn">
+                ← BACK
+            </button>
+
+            <div class="hero-badge">
+                HALL OF FAME
             </div>
+
+            <h1>Leaderboard</h1>
+
+            <p>
+                Shobar best score ekhane dekhabe.
+            </p>
+
+        </div>
+
+
+        <div class="leaderboard-card">
 
             <div class="leaderboard-tabs">
 
-                <button class="leader-tab active" data-board="snake">
-                    Snake
+                <button class="tab active" data-board="all">
+                    ALL
                 </button>
 
-                <button class="leader-tab" data-board="reaction">
-                    Reaction
+                <button class="tab" data-board="reaction">
+                    REACTION
                 </button>
 
-                <button class="leader-tab" data-board="clickrush">
-                    Click Rush
+                <button class="tab" data-board="target">
+                    TARGET
                 </button>
 
-                <button class="leader-tab" data-board="memory">
-                    Memory
+                <button class="tab" data-board="memory">
+                    MEMORY
+                </button>
+
+                <button class="tab" data-board="number">
+                    NUMBER
                 </button>
 
             </div>
 
-            <div id="leaderboard" class="leaderboard"></div>
 
-            <p class="leader-note">
-                Scores are saved locally on this device.
+            <div id="leaderboardList"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- NAME MODAL -->
+    <div id="nameModal" class="modal hidden">
+
+        <div class="modal-card">
+
+            <div class="modal-icon">◆</div>
+
+            <h2>What's your name?</h2>
+
+            <p>
+                Leaderboard-e ei name show korbe.
             </p>
 
-        </section>
+            <input
+                id="nameInput"
+                type="text"
+                maxlength="16"
+                placeholder="Enter your name"
+            >
 
-    </main>
-
-
-    <!-- =========================
-         GAME MODAL
-    ========================== -->
-
-    <div id="gameModal" class="modal hidden">
-
-        <div class="modal-backdrop"></div>
-
-        <div class="game-window">
-
-            <div class="game-header">
-
-                <div>
-                    <span id="gameCategory">GAME</span>
-                    <h2 id="gameTitle">Game</h2>
-                </div>
-
-                <button id="closeGame" class="close-btn">
-                    ×
-                </button>
-
-            </div>
-
-
-            <div id="gameStats" class="game-stats"></div>
-
-
-            <div id="gameContent" class="game-content"></div>
+            <button id="saveNameBtn" class="primary-btn">
+                ENTER ARCADE →
+            </button>
 
         </div>
 
     </div>
 
 
-    <!-- =========================
-         NAME MODAL
-    ========================== -->
+    <!-- GAME OVER MODAL -->
+    <div id="gameOverModal" class="modal hidden">
 
-    <div id="nameModal" class="name-modal">
+        <div class="modal-card">
 
-        <div class="name-card">
+            <div class="modal-icon">🏆</div>
 
-            <div class="brand-icon big">V</div>
+            <small>GAME COMPLETE</small>
 
-            <h2>Welcome to VOID.</h2>
+            <h2 id="gameOverTitle">
+                Nice!
+            </h2>
 
-            <p>
-                Choose a player name to start playing.
+            <div class="final-score">
+                <span>YOUR SCORE</span>
+                <strong id="finalScore">0</strong>
+            </div>
+
+            <p id="gameOverMessage">
+                Score saved to leaderboard.
             </p>
 
-            <input
-                id="playerInput"
-                maxlength="16"
-                placeholder="Your name"
-                autocomplete="off"
-            >
+            <button id="playAgainBtn" class="primary-btn">
+                PLAY AGAIN
+            </button>
 
-            <button id="savePlayer" class="primary-btn">
-                Enter Arcade →
+            <button id="homeFromGameBtn" class="secondary-btn">
+                BACK TO HOME
             </button>
 
         </div>
@@ -250,12 +403,11 @@
 
 
     <footer>
-        <strong>VOID ARCADE</strong>
-        <span>Made for people who are bored 💀</span>
+        <strong>ARCADE HUB</strong>
+        <p>Built for the squad • No account required</p>
     </footer>
 
-
-    <script src="script.js"></script>
+</div>
 
 </body>
 </html>
