@@ -1,0 +1,1035 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+    --bg: #060609;
+    --surface: #0d0d13;
+    --surface-2: #111118;
+    --text: #f5f5f7;
+    --muted: #858592;
+    --border: rgba(255,255,255,.09);
+
+    --purple: #9b7cff;
+    --cyan: #42d9ff;
+    --pink: #ff4fa3;
+    --green: #52e69b;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, sans-serif;
+    overflow-x: hidden;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+/* BACKGROUND */
+
+.background {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.grid {
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+
+    background-size: 70px 70px;
+
+    mask-image: linear-gradient(
+        to bottom,
+        black,
+        transparent 75%
+    );
+}
+
+.orb {
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    border-radius: 50%;
+    filter: blur(130px);
+    opacity: .12;
+}
+
+.orb-1 {
+    background: var(--purple);
+    top: -250px;
+    left: 5%;
+}
+
+.orb-2 {
+    background: var(--pink);
+    right: -200px;
+    top: 500px;
+}
+
+
+/* NAV */
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    height: 72px;
+
+    padding: 0 clamp(18px, 5vw, 70px);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: rgba(6,6,9,.72);
+    backdrop-filter: blur(20px);
+
+    border-bottom: 1px solid var(--border);
+}
+
+.logo,
+.footer-logo {
+    font-family: "Space Grotesk";
+    font-weight: 700;
+    letter-spacing: -1.5px;
+}
+
+.logo {
+    font-size: 23px;
+}
+
+.logo span,
+.footer-logo span {
+    color: var(--purple);
+}
+
+.nav-links {
+    display: flex;
+    gap: 28px;
+}
+
+.nav-links a {
+    color: #858590;
+    font-size: 12px;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: white;
+    background: rgba(255,255,255,.05);
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    padding: 7px 11px 7px 7px;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+#playerAvatar {
+    width: 27px;
+    height: 27px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 8px;
+
+    background: rgba(155,124,255,.15);
+    color: var(--purple);
+}
+
+
+/* HERO */
+
+.hero {
+    min-height: 680px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 100px 20px;
+}
+
+.hero-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 7px 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    background: rgba(255,255,255,.035);
+
+    color: #858592;
+
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.live-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+
+    background: var(--green);
+    box-shadow: 0 0 12px var(--green);
+}
+
+.hero h1 {
+    max-width: 1000px;
+
+    margin-top: 25px;
+
+    font-family: "Space Grotesk";
+
+    font-size: clamp(55px, 10vw, 125px);
+
+    line-height: .85;
+
+    letter-spacing: -7px;
+}
+
+.hero h1 span {
+    display: block;
+
+    background: linear-gradient(
+        90deg,
+        var(--purple),
+        var(--pink)
+    );
+
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    max-width: 550px;
+
+    margin: 30px auto;
+
+    color: var(--muted);
+
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.primary-btn,
+.secondary-btn {
+    padding: 13px 18px;
+
+    border-radius: 12px;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    transition: .25s;
+}
+
+.primary-btn {
+    color: #08070b;
+    background: white;
+}
+
+.primary-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(255,255,255,.12);
+}
+
+.secondary-btn {
+    color: white;
+
+    border: 1px solid var(--border);
+
+    background: rgba(255,255,255,.04);
+}
+
+.secondary-btn:hover {
+    background: rgba(255,255,255,.08);
+}
+
+.stats {
+    display: flex;
+    gap: 60px;
+
+    margin-top: 70px;
+}
+
+.stats div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.stats strong {
+    font-family: "Space Grotesk";
+    font-size: 23px;
+}
+
+.stats span {
+    color: #5d5d68;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+
+/* MAIN */
+
+main {
+    width: min(1250px, 100%);
+    margin: auto;
+}
+
+section {
+    padding: 80px 20px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+
+    margin-bottom: 35px;
+}
+
+.section-heading small {
+    color: #676773;
+
+    font-size: 9px;
+    font-weight: 900;
+
+    letter-spacing: 2px;
+}
+
+.section-heading h2 {
+    margin-top: 7px;
+
+    font-family: "Space Grotesk";
+
+    font-size: clamp(35px, 5vw, 55px);
+
+    letter-spacing: -2px;
+}
+
+.section-heading p {
+    color: #686873;
+    font-size: 12px;
+}
+
+
+/* GAME GRID */
+
+.games-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+.game-card {
+    position: relative;
+
+    overflow: hidden;
+
+    min-height: 390px;
+
+    padding: 27px;
+
+    border: 1px solid var(--border);
+    border-radius: 25px;
+
+    background:
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(155,124,255,.11),
+            transparent 38%
+        ),
+        linear-gradient(
+            145deg,
+            #111117,
+            #0a0a0f
+        );
+
+    transition: .3s;
+}
+
+.game-card:hover {
+    transform: translateY(-7px);
+
+    border-color: rgba(255,255,255,.16);
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.35);
+}
+
+.game-card.dodge {
+    background:
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(66,217,255,.10),
+            transparent 38%
+        ),
+        linear-gradient(
+            145deg,
+            #111117,
+            #0a0a0f
+        );
+}
+
+.game-card.space {
+    background:
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(255,79,163,.10),
+            transparent 38%
+        ),
+        linear-gradient(
+            145deg,
+            #111117,
+            #0a0a0f
+        );
+}
+
+.game-icon {
+    width: 58px;
+    height: 58px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 17px;
+
+    background: rgba(155,124,255,.12);
+
+    color: var(--purple);
+
+    font-size: 25px;
+
+    border: 1px solid rgba(155,124,255,.2);
+}
+
+.dodge .game-icon {
+    color: var(--cyan);
+    background: rgba(66,217,255,.1);
+}
+
+.space .game-icon {
+    color: var(--pink);
+    background: rgba(255,79,163,.1);
+}
+
+.game-number {
+    position: absolute;
+
+    right: 25px;
+    top: 30px;
+
+    color: #3e3e49;
+
+    font-family: "Space Grotesk";
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.game-card h3 {
+    margin-top: 28px;
+
+    font-family: "Space Grotesk";
+
+    font-size: 27px;
+    letter-spacing: -.8px;
+}
+
+.game-card p {
+    margin-top: 12px;
+
+    color: #858590;
+
+    font-size: 12px;
+
+    line-height: 1.8;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 25px;
+
+    color: #62626d;
+
+    font-size: 8px;
+    font-weight: 900;
+
+    letter-spacing: 1.2px;
+}
+
+.game-card button {
+    position: absolute;
+
+    left: 27px;
+    right: 27px;
+    bottom: 27px;
+
+    padding: 12px;
+
+    color: white;
+
+    background: rgba(255,255,255,.055);
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    transition: .2s;
+}
+
+.game-card button:hover {
+    background: white;
+    color: black;
+}
+
+
+/* LEADERBOARD */
+
+#leaderboards {
+    border-top: 1px solid var(--border);
+}
+
+.clear-btn {
+    padding: 8px 11px;
+
+    color: #777783;
+
+    background: transparent;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.clear-btn:hover {
+    color: #ff6f88;
+    border-color: rgba(255,111,136,.25);
+}
+
+.leaderboard-tabs {
+    display: flex;
+    gap: 7px;
+
+    margin-bottom: 15px;
+
+    overflow-x: auto;
+}
+
+.tab {
+    white-space: nowrap;
+
+    padding: 10px 13px;
+
+    color: #777783;
+
+    background: rgba(255,255,255,.03);
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.tab.active {
+    color: white;
+    background: rgba(155,124,255,.13);
+    border-color: rgba(155,124,255,.25);
+}
+
+.leaderboard {
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    background: rgba(255,255,255,.02);
+}
+
+.leaderboard-header,
+.score-row {
+    display: grid;
+
+    grid-template-columns: 60px 1fr 130px;
+
+    align-items: center;
+
+    padding: 16px 20px;
+}
+
+.leaderboard-header {
+    color: #555560;
+
+    border-bottom: 1px solid var(--border);
+
+    font-size: 8px;
+    font-weight: 900;
+
+    letter-spacing: 1.5px;
+}
+
+.score-row {
+    border-bottom: 1px solid rgba(255,255,255,.045);
+
+    font-size: 12px;
+}
+
+.score-row:last-child {
+    border-bottom: 0;
+}
+
+.rank {
+    color: #62626d;
+    font-weight: 800;
+}
+
+.rank.top {
+    color: var(--purple);
+}
+
+.score-name {
+    font-weight: 700;
+}
+
+.score-value {
+    text-align: right;
+
+    font-family: "Space Grotesk";
+
+    font-weight: 700;
+}
+
+.empty {
+    padding: 50px 20px;
+
+    text-align: center;
+
+    color: #555560;
+
+    font-size: 12px;
+}
+
+
+/* MODALS */
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 500;
+
+    display: none;
+
+    place-items: center;
+
+    padding: 20px;
+
+    background: rgba(0,0,0,.75);
+
+    backdrop-filter: blur(15px);
+}
+
+.modal.show {
+    display: grid;
+}
+
+.modal-box,
+.game-window {
+    position: relative;
+
+    width: min(100%, 430px);
+
+    padding: 35px;
+
+    border: 1px solid var(--border);
+    border-radius: 25px;
+
+    background: #0d0d13;
+
+    box-shadow: 0 40px 120px rgba(0,0,0,.6);
+
+    animation: pop .25s ease;
+}
+
+@keyframes pop {
+    from {
+        opacity: 0;
+        transform: scale(.94);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.close {
+    position: absolute;
+
+    top: 15px;
+    right: 17px;
+
+    width: 30px;
+    height: 30px;
+
+    border-radius: 8px;
+
+    color: #888894;
+
+    background: rgba(255,255,255,.04);
+
+    border: 1px solid var(--border);
+
+    font-size: 18px;
+}
+
+.modal-icon {
+    font-size: 35px;
+}
+
+.modal-box h2 {
+    margin-top: 15px;
+
+    font-family: "Space Grotesk";
+
+    font-size: 27px;
+}
+
+.modal-box p {
+    margin-top: 7px;
+
+    color: #777783;
+
+    font-size: 12px;
+}
+
+.modal-box input {
+    width: 100%;
+
+    margin-top: 20px;
+
+    padding: 13px;
+
+    outline: none;
+
+    color: white;
+
+    background: rgba(255,255,255,.04);
+
+    border: 1px solid var(--border);
+
+    border-radius: 11px;
+}
+
+.modal-box input:focus {
+    border-color: rgba(155,124,255,.5);
+}
+
+.modal-btn {
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 13px;
+
+    color: #08070b;
+
+    background: white;
+
+    border: 0;
+
+    border-radius: 11px;
+
+    font-weight: 900;
+}
+
+
+/* GAME WINDOWS */
+
+.game-window {
+    width: min(700px, 100%);
+
+    min-height: 450px;
+
+    padding: 30px;
+}
+
+.game-title {
+    text-align: center;
+
+    font-family: "Space Grotesk";
+
+    font-size: 27px;
+}
+
+.game-subtitle {
+    margin-top: 5px;
+
+    text-align: center;
+
+    color: #777783;
+
+    font-size: 11px;
+}
+
+
+/* REACTION */
+
+.reaction-area {
+    height: 320px;
+
+    margin-top: 25px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 18px;
+
+    background: #15151d;
+
+    border: 1px solid var(--border);
+
+    user-select: none;
+}
+
+.reaction-target {
+    width: 150px;
+    height: 150px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: #22222d;
+
+    color: #777783;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    transition: .15s;
+}
+
+.reaction-target.ready {
+    background: #55e69d;
+
+    color: #06120c;
+
+    box-shadow: 0 0 60px rgba(82,230,155,.4);
+}
+
+
+/* DODGE */
+
+#dodgeCanvas,
+#spaceCanvas {
+    width: 100%;
+
+    display: block;
+
+    margin-top: 20px;
+
+    border-radius: 15px;
+
+    background: #08080d;
+
+    border: 1px solid var(--border);
+}
+
+.game-controls {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 12px;
+
+    color: #6d6d78;
+
+    font-size: 10px;
+}
+
+.game-score {
+    color: white;
+
+    font-family: "Space Grotesk";
+
+    font-size: 20px;
+}
+
+
+/* FOOTER */
+
+footer {
+    padding: 70px 20px 40px;
+
+    text-align: center;
+
+    border-top: 1px solid var(--border);
+}
+
+.footer-logo {
+    font-size: 28px;
+}
+
+footer p {
+    margin-top: 8px;
+
+    color: #5c5c67;
+
+    font-size: 11px;
+}
+
+footer small {
+    display: block;
+
+    margin-top: 18px;
+
+    color: #3e3e48;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+}
+
+
+/* RESPONSIVE */
+
+@media(max-width: 850px) {
+
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .hero h1 {
+        letter-spacing: -4px;
+    }
+
+}
+
+@media(max-width: 500px) {
+
+    nav {
+        padding: 0 15px;
+    }
+
+    .hero {
+        min-height: 600px;
+        padding-top: 70px;
+    }
+
+    .hero h1 {
+        font-size: 54px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .stats {
+        gap: 30px;
+    }
+
+    section {
+        padding: 60px 15px;
+    }
+
+    .game-card {
+        min-height: 370px;
+    }
+
+    .leaderboard-header,
+    .score-row {
+        grid-template-columns: 40px 1fr 90px;
+        padding: 14px;
+    }
+
+    .modal-box,
+    .game-window {
+        padding: 25px 18px;
+    }
+}
