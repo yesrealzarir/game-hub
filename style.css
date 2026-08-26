@@ -1,1035 +1,1333 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+/* =========================================
+   VOID ARCADE
+   No Supabase
+   LocalStorage only
+========================================= */
 
-:root {
-    --bg: #060609;
-    --surface: #0d0d13;
-    --surface-2: #111118;
-    --text: #f5f5f7;
-    --muted: #858592;
-    --border: rgba(255,255,255,.09);
 
-    --purple: #9b7cff;
-    --cyan: #42d9ff;
-    --pink: #ff4fa3;
-    --green: #52e69b;
+/* =========================================
+   PLAYER
+========================================= */
+
+let playerName = localStorage.getItem("void_player");
+
+const nameModal = document.getElementById("nameModal");
+const playerInput = document.getElementById("playerInput");
+const savePlayer = document.getElementById("savePlayer");
+const playerDisplay = document.getElementById("playerDisplay");
+const changeName = document.getElementById("changeName");
+
+function updatePlayer() {
+
+    if (!playerName) {
+        nameModal.classList.remove("hidden");
+    } else {
+        nameModal.classList.add("hidden");
+        playerDisplay.textContent = playerName;
+    }
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+savePlayer.addEventListener("click", savePlayerName);
 
-html {
-    scroll-behavior: smooth;
-}
+playerInput.addEventListener("keydown", function(e) {
 
-body {
-    min-height: 100vh;
-    background: var(--bg);
-    color: var(--text);
-    font-family: Inter, sans-serif;
-    overflow-x: hidden;
-}
+    if (e.key === "Enter") {
+        savePlayerName();
+    }
 
-button,
-input {
-    font: inherit;
-}
+});
 
-button {
-    cursor: pointer;
-}
+function savePlayerName() {
 
-a {
-    color: inherit;
-    text-decoration: none;
-}
+    const value = playerInput.value.trim();
 
+    if (!value) {
+        playerInput.focus();
+        return;
+    }
 
-/* BACKGROUND */
+    playerName = value.slice(0, 16);
 
-.background {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    overflow: hidden;
-    pointer-events: none;
-}
-
-.grid {
-    position: absolute;
-    inset: 0;
-
-    background-image:
-        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-
-    background-size: 70px 70px;
-
-    mask-image: linear-gradient(
-        to bottom,
-        black,
-        transparent 75%
-    );
-}
-
-.orb {
-    position: absolute;
-    width: 450px;
-    height: 450px;
-    border-radius: 50%;
-    filter: blur(130px);
-    opacity: .12;
-}
-
-.orb-1 {
-    background: var(--purple);
-    top: -250px;
-    left: 5%;
-}
-
-.orb-2 {
-    background: var(--pink);
-    right: -200px;
-    top: 500px;
-}
-
-
-/* NAV */
-
-nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-
-    height: 72px;
-
-    padding: 0 clamp(18px, 5vw, 70px);
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    background: rgba(6,6,9,.72);
-    backdrop-filter: blur(20px);
-
-    border-bottom: 1px solid var(--border);
-}
-
-.logo,
-.footer-logo {
-    font-family: "Space Grotesk";
-    font-weight: 700;
-    letter-spacing: -1.5px;
-}
-
-.logo {
-    font-size: 23px;
-}
-
-.logo span,
-.footer-logo span {
-    color: var(--purple);
-}
-
-.nav-links {
-    display: flex;
-    gap: 28px;
-}
-
-.nav-links a {
-    color: #858590;
-    font-size: 12px;
-    font-weight: 700;
-    transition: .2s;
-}
-
-.nav-links a:hover {
-    color: white;
-}
-
-.profile-btn {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-
-    color: white;
-    background: rgba(255,255,255,.05);
-
-    border: 1px solid var(--border);
-    border-radius: 12px;
-
-    padding: 7px 11px 7px 7px;
-
-    font-size: 11px;
-    font-weight: 700;
-}
-
-#playerAvatar {
-    width: 27px;
-    height: 27px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 8px;
-
-    background: rgba(155,124,255,.15);
-    color: var(--purple);
-}
-
-
-/* HERO */
-
-.hero {
-    min-height: 680px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    text-align: center;
-
-    padding: 100px 20px;
-}
-
-.hero-badge {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    padding: 7px 12px;
-
-    border: 1px solid var(--border);
-    border-radius: 999px;
-
-    background: rgba(255,255,255,.035);
-
-    color: #858592;
-
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 2px;
-}
-
-.live-dot {
-    width: 6px;
-    height: 6px;
-
-    border-radius: 50%;
-
-    background: var(--green);
-    box-shadow: 0 0 12px var(--green);
-}
-
-.hero h1 {
-    max-width: 1000px;
-
-    margin-top: 25px;
-
-    font-family: "Space Grotesk";
-
-    font-size: clamp(55px, 10vw, 125px);
-
-    line-height: .85;
-
-    letter-spacing: -7px;
-}
-
-.hero h1 span {
-    display: block;
-
-    background: linear-gradient(
-        90deg,
-        var(--purple),
-        var(--pink)
+    localStorage.setItem(
+        "void_player",
+        playerName
     );
 
-    -webkit-background-clip: text;
-    color: transparent;
+    updatePlayer();
 }
 
-.hero p {
-    max-width: 550px;
+changeName.addEventListener("click", function() {
 
-    margin: 30px auto;
+    playerInput.value = playerName || "";
 
-    color: var(--muted);
+    nameModal.classList.remove("hidden");
 
-    font-size: 14px;
-    line-height: 1.8;
-}
+    setTimeout(() => {
+        playerInput.focus();
+    }, 100);
 
-.hero-buttons {
-    display: flex;
-    gap: 10px;
-}
+});
 
-.primary-btn,
-.secondary-btn {
-    padding: 13px 18px;
 
-    border-radius: 12px;
+updatePlayer();
 
-    font-size: 12px;
-    font-weight: 800;
 
-    transition: .25s;
-}
+/* =========================================
+   GAME MODAL
+========================================= */
 
-.primary-btn {
-    color: #08070b;
-    background: white;
-}
+const modal = document.getElementById("gameModal");
+const closeGame = document.getElementById("closeGame");
+const gameContent = document.getElementById("gameContent");
+const gameTitle = document.getElementById("gameTitle");
+const gameCategory = document.getElementById("gameCategory");
+const gameStats = document.getElementById("gameStats");
 
-.primary-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba(255,255,255,.12);
-}
+document.querySelectorAll(".game-card").forEach(card => {
 
-.secondary-btn {
-    color: white;
+    card.addEventListener("click", () => {
 
-    border: 1px solid var(--border);
+        openGame(card.dataset.game);
 
-    background: rgba(255,255,255,.04);
-}
+    });
 
-.secondary-btn:hover {
-    background: rgba(255,255,255,.08);
-}
+});
 
-.stats {
-    display: flex;
-    gap: 60px;
 
-    margin-top: 70px;
-}
+closeGame.addEventListener("click", closeGameWindow);
 
-.stats div {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
+document.querySelector(".modal-backdrop").addEventListener(
+    "click",
+    closeGameWindow
+);
 
-.stats strong {
-    font-family: "Space Grotesk";
-    font-size: 23px;
-}
+function closeGameWindow() {
 
-.stats span {
-    color: #5d5d68;
-    font-size: 8px;
-    font-weight: 800;
-    letter-spacing: 2px;
+    modal.classList.add("hidden");
+
+    gameContent.innerHTML = "";
+    gameStats.innerHTML = "";
+
+    clearAllGameTimers();
 }
 
 
-/* MAIN */
+function openGame(game) {
 
-main {
-    width: min(1250px, 100%);
-    margin: auto;
+    modal.classList.remove("hidden");
+
+    gameContent.innerHTML = "";
+    gameStats.innerHTML = "";
+
+    if (game === "snake") {
+
+        gameCategory.textContent = "ARCADE / 01";
+        gameTitle.textContent = "Snake";
+
+        startSnake();
+
+    }
+
+    if (game === "tictactoe") {
+
+        gameCategory.textContent = "ARCADE / 02";
+        gameTitle.textContent = "Tic-Tac-Toe";
+
+        startTicTacToe();
+
+    }
+
+    if (game === "reaction") {
+
+        gameCategory.textContent = "ARCADE / 03";
+        gameTitle.textContent = "Reaction Test";
+
+        startReaction();
+
+    }
+
+    if (game === "clickrush") {
+
+        gameCategory.textContent = "ARCADE / 04";
+        gameTitle.textContent = "Click Rush";
+
+        startClickRush();
+
+    }
+
+    if (game === "memory") {
+
+        gameCategory.textContent = "ARCADE / 05";
+        gameTitle.textContent = "Memory Match";
+
+        startMemory();
+
+    }
+
 }
 
-section {
-    padding: 80px 20px;
+
+/* =========================================
+   TIMER CLEANUP
+========================================= */
+
+let timers = [];
+
+function addTimer(timer) {
+    timers.push(timer);
+    return timer;
 }
 
-.section-heading {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
+function clearAllGameTimers() {
 
-    margin-bottom: 35px;
-}
+    timers.forEach(timer => {
 
-.section-heading small {
-    color: #676773;
+        clearTimeout(timer);
+        clearInterval(timer);
 
-    font-size: 9px;
-    font-weight: 900;
+    });
 
-    letter-spacing: 2px;
-}
-
-.section-heading h2 {
-    margin-top: 7px;
-
-    font-family: "Space Grotesk";
-
-    font-size: clamp(35px, 5vw, 55px);
-
-    letter-spacing: -2px;
-}
-
-.section-heading p {
-    color: #686873;
-    font-size: 12px;
+    timers = [];
 }
 
 
-/* GAME GRID */
+/* =========================================
+   LEADERBOARD
+========================================= */
 
-.games-grid {
-    display: grid;
+const leaderboard = document.getElementById("leaderboard");
 
-    grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+let currentBoard = "snake";
 
-    gap: 16px;
+document.querySelectorAll(".leader-tab").forEach(tab => {
+
+    tab.addEventListener("click", function() {
+
+        document.querySelectorAll(".leader-tab")
+            .forEach(x => x.classList.remove("active"));
+
+        this.classList.add("active");
+
+        currentBoard = this.dataset.board;
+
+        renderLeaderboard();
+
+    });
+
+});
+
+
+function getScores(game) {
+
+    return JSON.parse(
+        localStorage.getItem(
+            "void_scores_" + game
+        ) || "[]"
+    );
+
 }
 
-.game-card {
-    position: relative;
 
-    overflow: hidden;
+function saveScore(game, score) {
 
-    min-height: 390px;
+    if (!playerName) return;
 
-    padding: 27px;
+    let scores = getScores(game);
 
-    border: 1px solid var(--border);
-    border-radius: 25px;
+    scores.push({
+        name: playerName,
+        score: score
+    });
 
-    background:
-        radial-gradient(
-            circle at 100% 0%,
-            rgba(155,124,255,.11),
-            transparent 38%
-        ),
-        linear-gradient(
-            145deg,
-            #111117,
-            #0a0a0f
+    scores.sort((a, b) => b.score - a.score);
+
+    scores = scores.slice(0, 10);
+
+    localStorage.setItem(
+        "void_scores_" + game,
+        JSON.stringify(scores)
+    );
+
+    renderLeaderboard();
+
+}
+
+
+function renderLeaderboard() {
+
+    let scores = getScores(currentBoard);
+
+    if (!scores.length) {
+
+        leaderboard.innerHTML = `
+            <div class="leader-row">
+                <div></div>
+                <div class="leader-user">
+                    No scores yet. Be the first.
+                </div>
+                <div>🏆</div>
+            </div>
+        `;
+
+        return;
+    }
+
+    leaderboard.innerHTML = scores.map((entry, index) => {
+
+        let rankClass = "";
+
+        if (index === 0) rankClass = "first";
+        if (index === 1) rankClass = "second";
+        if (index === 2) rankClass = "third";
+
+        const isYou =
+            entry.name === playerName;
+
+        return `
+            <div class="leader-row">
+
+                <div class="rank ${rankClass}">
+                    #${index + 1}
+                </div>
+
+                <div class="leader-user">
+                    ${escapeHTML(entry.name)}
+
+                    ${isYou
+                        ? `<span class="you">YOU</span>`
+                        : ""}
+                </div>
+
+                <div class="leader-score">
+                    ${entry.score}
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+
+}
+
+
+function escapeHTML(text) {
+
+    const div = document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
+}
+
+renderLeaderboard();
+
+
+/* =========================================
+   SNAKE
+========================================= */
+
+let snakeInterval = null;
+
+function startSnake() {
+
+    clearAllGameTimers();
+
+    let snake = [
+        {x: 10, y: 10},
+        {x: 9, y: 10},
+        {x: 8, y: 10}
+    ];
+
+    let direction = {
+        x: 1,
+        y: 0
+    };
+
+    let nextDirection = {
+        x: 1,
+        y: 0
+    };
+
+    let food = randomFood();
+
+    let score = 0;
+
+    let running = true;
+
+    gameStats.innerHTML = `
+        <span>SCORE <strong id="snakeScore">0</strong></span>
+        <span>BEST <strong>${getBest("snake")}</strong></span>
+    `;
+
+    gameContent.innerHTML = `
+
+        <div class="snake-board" id="snakeBoard"></div>
+
+        <div class="mobile-controls">
+
+            <button class="control-btn up" data-dir="up">↑</button>
+
+            <button class="control-btn left" data-dir="left">←</button>
+
+            <button class="control-btn down" data-dir="down">↓</button>
+
+            <button class="control-btn right" data-dir="right">→</button>
+
+        </div>
+
+        <button class="game-action" id="snakeRestart">
+            Restart
+        </button>
+    `;
+
+    const board =
+        document.getElementById("snakeBoard");
+
+    function render() {
+
+        board.innerHTML = "";
+
+        for (let y = 0; y < 20; y++) {
+
+            for (let x = 0; x < 20; x++) {
+
+                const cell =
+                    document.createElement("div");
+
+                cell.className = "snake-cell";
+
+                const snakeIndex =
+                    snake.findIndex(
+                        part =>
+                            part.x === x &&
+                            part.y === y
+                    );
+
+                if (snakeIndex === 0) {
+                    cell.classList.add("snake-head");
+                }
+
+                if (snakeIndex > 0) {
+                    cell.classList.add("snake");
+                }
+
+                if (
+                    food.x === x &&
+                    food.y === y
+                ) {
+                    cell.classList.add("food");
+                }
+
+                board.appendChild(cell);
+
+            }
+
+        }
+
+        document.getElementById(
+            "snakeScore"
+        ).textContent = score;
+
+    }
+
+    function move() {
+
+        if (!running) return;
+
+        direction = nextDirection;
+
+        const head = {
+            x: snake[0].x + direction.x,
+            y: snake[0].y + direction.y
+        };
+
+        const hitWall =
+            head.x < 0 ||
+            head.x >= 20 ||
+            head.y < 0 ||
+            head.y >= 20;
+
+        const hitSelf =
+            snake.some(
+                part =>
+                    part.x === head.x &&
+                    part.y === head.y
+            );
+
+        if (hitWall || hitSelf) {
+
+            running = false;
+
+            clearInterval(snakeInterval);
+
+            saveScore("snake", score);
+
+            showGameMessage(
+                "Game Over",
+                `Score: ${score}`,
+                "Play Again",
+                startSnake
+            );
+
+            return;
+        }
+
+        snake.unshift(head);
+
+        if (
+            head.x === food.x &&
+            head.y === food.y
+        ) {
+
+            score++;
+
+            food = randomFood();
+
+        } else {
+
+            snake.pop();
+
+        }
+
+        render();
+
+    }
+
+    snakeInterval = setInterval(
+        move,
+        Math.max(70, 145 - score * 3)
+    );
+
+    document.querySelectorAll(
+        ".control-btn"
+    ).forEach(btn => {
+
+        btn.addEventListener(
+            "click",
+            () => changeSnakeDirection(
+                btn.dataset.dir
+            )
         );
 
-    transition: .3s;
-}
+    });
 
-.game-card:hover {
-    transform: translateY(-7px);
+    document.getElementById(
+        "snakeRestart"
+    ).addEventListener(
+        "click",
+        startSnake
+    );
 
-    border-color: rgba(255,255,255,.16);
+    document.onkeydown = function(e) {
 
-    box-shadow:
-        0 30px 80px rgba(0,0,0,.35);
-}
+        if (
+            ["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"]
+            .includes(e.key)
+        ) {
 
-.game-card.dodge {
-    background:
-        radial-gradient(
-            circle at 100% 0%,
-            rgba(66,217,255,.10),
-            transparent 38%
-        ),
-        linear-gradient(
-            145deg,
-            #111117,
-            #0a0a0f
+            e.preventDefault();
+
+        }
+
+        if (e.key === "ArrowUp" || e.key.toLowerCase() === "w")
+            changeSnakeDirection("up");
+
+        if (e.key === "ArrowDown" || e.key.toLowerCase() === "s")
+            changeSnakeDirection("down");
+
+        if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a")
+            changeSnakeDirection("left");
+
+        if (e.key === "ArrowRight" || e.key.toLowerCase() === "d")
+            changeSnakeDirection("right");
+
+    };
+
+    function changeSnakeDirection(dir) {
+
+        if (dir === "up" && direction.y !== 1)
+            nextDirection = {x:0,y:-1};
+
+        if (dir === "down" && direction.y !== -1)
+            nextDirection = {x:0,y:1};
+
+        if (dir === "left" && direction.x !== 1)
+            nextDirection = {x:-1,y:0};
+
+        if (dir === "right" && direction.x !== -1)
+            nextDirection = {x:1,y:0};
+
+    }
+
+    render();
+
+    function randomFood() {
+
+        let position;
+
+        do {
+
+            position = {
+                x: Math.floor(Math.random() * 20),
+                y: Math.floor(Math.random() * 20)
+            };
+
+        } while (
+            snake.some(
+                part =>
+                    part.x === position.x &&
+                    part.y === position.y
+            )
         );
+
+        return position;
+    }
+
 }
 
-.game-card.space {
-    background:
-        radial-gradient(
-            circle at 100% 0%,
-            rgba(255,79,163,.10),
-            transparent 38%
-        ),
-        linear-gradient(
-            145deg,
-            #111117,
-            #0a0a0f
+
+/* =========================================
+   TIC TAC TOE
+========================================= */
+
+function startTicTacToe() {
+
+    clearAllGameTimers();
+
+    let board = Array(9).fill("");
+
+    let gameOver = false;
+
+    gameStats.innerHTML = `
+        <span>YOU <strong>X</strong></span>
+        <span>CPU <strong>O</strong></span>
+    `;
+
+    gameContent.innerHTML = `
+
+        <div class="ttt-board" id="tttBoard"></div>
+
+        <button class="game-action" id="tttRestart">
+            New Game
+        </button>
+
+    `;
+
+    const boardElement =
+        document.getElementById("tttBoard");
+
+    function render() {
+
+        boardElement.innerHTML = board.map(
+            (value, index) => `
+                <button
+                    class="ttt-cell"
+                    data-index="${index}"
+                >
+                    ${value}
+                </button>
+            `
+        ).join("");
+
+        boardElement
+            .querySelectorAll(".ttt-cell")
+            .forEach(cell => {
+
+                cell.addEventListener(
+                    "click",
+                    () => playerMove(
+                        Number(cell.dataset.index)
+                    )
+                );
+
+            });
+
+    }
+
+    function playerMove(index) {
+
+        if (
+            board[index] ||
+            gameOver
+        ) return;
+
+        board[index] = "X";
+
+        render();
+
+        if (checkWinner("X")) {
+
+            gameOver = true;
+
+            saveScore("tictactoe", 1);
+
+            showGameMessage(
+                "YOU WIN 🏆",
+                "You defeated the computer.",
+                "Play Again",
+                startTicTacToe
+            );
+
+            return;
+        }
+
+        if (board.every(Boolean)) {
+
+            gameOver = true;
+
+            showGameMessage(
+                "DRAW",
+                "Nobody won this time.",
+                "Play Again",
+                startTicTacToe
+            );
+
+            return;
+        }
+
+        addTimer(setTimeout(cpuMove, 450));
+
+    }
+
+    function cpuMove() {
+
+        if (gameOver) return;
+
+        const available =
+            board
+                .map((v,i) => v ? null : i)
+                .filter(v => v !== null);
+
+        let move;
+
+        /* Try to win */
+
+        move = findWinningMove("O");
+
+        /* Block player */
+
+        if (move === null)
+            move = findWinningMove("X");
+
+        /* Center */
+
+        if (
+            move === null &&
+            !board[4]
+        )
+            move = 4;
+
+        /* Random */
+
+        if (move === null) {
+
+            move =
+                available[
+                    Math.floor(
+                        Math.random() *
+                        available.length
+                    )
+                ];
+
+        }
+
+        board[move] = "O";
+
+        render();
+
+        if (checkWinner("O")) {
+
+            gameOver = true;
+
+            showGameMessage(
+                "CPU WINS",
+                "Better luck next time 😭",
+                "Try Again",
+                startTicTacToe
+            );
+
+            return;
+        }
+
+        if (board.every(Boolean)) {
+
+            gameOver = true;
+
+            showGameMessage(
+                "DRAW",
+                "That was close.",
+                "Play Again",
+                startTicTacToe
+            );
+
+        }
+
+    }
+
+    function findWinningMove(symbol) {
+
+        for (
+            let i = 0;
+            i < 9;
+            i++
+        ) {
+
+            if (board[i])
+                continue;
+
+            board[i] = symbol;
+
+            const win =
+                checkWinner(symbol);
+
+            board[i] = "";
+
+            if (win)
+                return i;
+
+        }
+
+        return null;
+    }
+
+    function checkWinner(symbol) {
+
+        const wins = [
+
+            [0,1,2],
+            [3,4,5],
+            [6,7,8],
+
+            [0,3,6],
+            [1,4,7],
+            [2,5,8],
+
+            [0,4,8],
+            [2,4,6]
+
+        ];
+
+        return wins.some(
+            combo =>
+                combo.every(
+                    i => board[i] === symbol
+                )
         );
-}
 
-.game-icon {
-    width: 58px;
-    height: 58px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 17px;
-
-    background: rgba(155,124,255,.12);
-
-    color: var(--purple);
-
-    font-size: 25px;
-
-    border: 1px solid rgba(155,124,255,.2);
-}
-
-.dodge .game-icon {
-    color: var(--cyan);
-    background: rgba(66,217,255,.1);
-}
-
-.space .game-icon {
-    color: var(--pink);
-    background: rgba(255,79,163,.1);
-}
-
-.game-number {
-    position: absolute;
-
-    right: 25px;
-    top: 30px;
-
-    color: #3e3e49;
-
-    font-family: "Space Grotesk";
-
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.game-card h3 {
-    margin-top: 28px;
-
-    font-family: "Space Grotesk";
-
-    font-size: 27px;
-    letter-spacing: -.8px;
-}
-
-.game-card p {
-    margin-top: 12px;
-
-    color: #858590;
-
-    font-size: 12px;
-
-    line-height: 1.8;
-}
-
-.game-info {
-    display: flex;
-    justify-content: space-between;
-
-    margin-top: 25px;
-
-    color: #62626d;
-
-    font-size: 8px;
-    font-weight: 900;
-
-    letter-spacing: 1.2px;
-}
-
-.game-card button {
-    position: absolute;
-
-    left: 27px;
-    right: 27px;
-    bottom: 27px;
-
-    padding: 12px;
-
-    color: white;
-
-    background: rgba(255,255,255,.055);
-
-    border: 1px solid var(--border);
-
-    border-radius: 10px;
-
-    font-size: 10px;
-    font-weight: 900;
-
-    transition: .2s;
-}
-
-.game-card button:hover {
-    background: white;
-    color: black;
-}
-
-
-/* LEADERBOARD */
-
-#leaderboards {
-    border-top: 1px solid var(--border);
-}
-
-.clear-btn {
-    padding: 8px 11px;
-
-    color: #777783;
-
-    background: transparent;
-
-    border: 1px solid var(--border);
-
-    border-radius: 9px;
-
-    font-size: 9px;
-    font-weight: 800;
-}
-
-.clear-btn:hover {
-    color: #ff6f88;
-    border-color: rgba(255,111,136,.25);
-}
-
-.leaderboard-tabs {
-    display: flex;
-    gap: 7px;
-
-    margin-bottom: 15px;
-
-    overflow-x: auto;
-}
-
-.tab {
-    white-space: nowrap;
-
-    padding: 10px 13px;
-
-    color: #777783;
-
-    background: rgba(255,255,255,.03);
-
-    border: 1px solid var(--border);
-
-    border-radius: 9px;
-
-    font-size: 10px;
-    font-weight: 800;
-}
-
-.tab.active {
-    color: white;
-    background: rgba(155,124,255,.13);
-    border-color: rgba(155,124,255,.25);
-}
-
-.leaderboard {
-    overflow: hidden;
-
-    border: 1px solid var(--border);
-    border-radius: 18px;
-
-    background: rgba(255,255,255,.02);
-}
-
-.leaderboard-header,
-.score-row {
-    display: grid;
-
-    grid-template-columns: 60px 1fr 130px;
-
-    align-items: center;
-
-    padding: 16px 20px;
-}
-
-.leaderboard-header {
-    color: #555560;
-
-    border-bottom: 1px solid var(--border);
-
-    font-size: 8px;
-    font-weight: 900;
-
-    letter-spacing: 1.5px;
-}
-
-.score-row {
-    border-bottom: 1px solid rgba(255,255,255,.045);
-
-    font-size: 12px;
-}
-
-.score-row:last-child {
-    border-bottom: 0;
-}
-
-.rank {
-    color: #62626d;
-    font-weight: 800;
-}
-
-.rank.top {
-    color: var(--purple);
-}
-
-.score-name {
-    font-weight: 700;
-}
-
-.score-value {
-    text-align: right;
-
-    font-family: "Space Grotesk";
-
-    font-weight: 700;
-}
-
-.empty {
-    padding: 50px 20px;
-
-    text-align: center;
-
-    color: #555560;
-
-    font-size: 12px;
-}
-
-
-/* MODALS */
-
-.modal {
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 500;
-
-    display: none;
-
-    place-items: center;
-
-    padding: 20px;
-
-    background: rgba(0,0,0,.75);
-
-    backdrop-filter: blur(15px);
-}
-
-.modal.show {
-    display: grid;
-}
-
-.modal-box,
-.game-window {
-    position: relative;
-
-    width: min(100%, 430px);
-
-    padding: 35px;
-
-    border: 1px solid var(--border);
-    border-radius: 25px;
-
-    background: #0d0d13;
-
-    box-shadow: 0 40px 120px rgba(0,0,0,.6);
-
-    animation: pop .25s ease;
-}
-
-@keyframes pop {
-    from {
-        opacity: 0;
-        transform: scale(.94);
     }
 
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
+    document.getElementById(
+        "tttRestart"
+    ).addEventListener(
+        "click",
+        startTicTacToe
+    );
 
-.close {
-    position: absolute;
+    render();
 
-    top: 15px;
-    right: 17px;
-
-    width: 30px;
-    height: 30px;
-
-    border-radius: 8px;
-
-    color: #888894;
-
-    background: rgba(255,255,255,.04);
-
-    border: 1px solid var(--border);
-
-    font-size: 18px;
-}
-
-.modal-icon {
-    font-size: 35px;
-}
-
-.modal-box h2 {
-    margin-top: 15px;
-
-    font-family: "Space Grotesk";
-
-    font-size: 27px;
-}
-
-.modal-box p {
-    margin-top: 7px;
-
-    color: #777783;
-
-    font-size: 12px;
-}
-
-.modal-box input {
-    width: 100%;
-
-    margin-top: 20px;
-
-    padding: 13px;
-
-    outline: none;
-
-    color: white;
-
-    background: rgba(255,255,255,.04);
-
-    border: 1px solid var(--border);
-
-    border-radius: 11px;
-}
-
-.modal-box input:focus {
-    border-color: rgba(155,124,255,.5);
-}
-
-.modal-btn {
-    width: 100%;
-
-    margin-top: 10px;
-
-    padding: 13px;
-
-    color: #08070b;
-
-    background: white;
-
-    border: 0;
-
-    border-radius: 11px;
-
-    font-weight: 900;
 }
 
 
-/* GAME WINDOWS */
+/* =========================================
+   REACTION TEST
+========================================= */
 
-.game-window {
-    width: min(700px, 100%);
+function startReaction() {
 
-    min-height: 450px;
+    clearAllGameTimers();
 
-    padding: 30px;
-}
+    let started = false;
+    let startTime = 0;
 
-.game-title {
-    text-align: center;
+    gameStats.innerHTML = `
+        <span>BEST <strong>${getBest("reaction")} ms</strong></span>
+    `;
 
-    font-family: "Space Grotesk";
+    gameContent.innerHTML = `
 
-    font-size: 27px;
-}
+        <div
+            class="reaction-box"
+            id="reactionBox"
+        >
+            TAP TO START
+        </div>
 
-.game-subtitle {
-    margin-top: 5px;
+        <button
+            class="game-action"
+            id="reactionRestart"
+        >
+            Restart
+        </button>
+    `;
 
-    text-align: center;
+    const box =
+        document.getElementById("reactionBox");
 
-    color: #777783;
+    box.addEventListener(
+        "click",
+        reactionClick
+    );
 
-    font-size: 11px;
-}
+    document.getElementById(
+        "reactionRestart"
+    ).addEventListener(
+        "click",
+        startReaction
+    );
 
+    function reactionClick() {
 
-/* REACTION */
+        if (started) {
 
-.reaction-area {
-    height: 320px;
+            const result =
+                Date.now() - startTime;
 
-    margin-top: 25px;
+            started = false;
 
-    display: grid;
-    place-items: center;
+            saveScore(
+                "reaction",
+                Math.max(1, 1000 - result)
+            );
 
-    border-radius: 18px;
+            box.className = "reaction-box";
 
-    background: #15151d;
+            box.innerHTML = `
+                ${result} ms
+                <br>
+                <small>Tap to try again</small>
+            `;
 
-    border: 1px solid var(--border);
+            return;
+        }
 
-    user-select: none;
-}
+        box.className =
+            "reaction-box waiting";
 
-.reaction-target {
-    width: 150px;
-    height: 150px;
+        box.textContent =
+            "WAIT...";
 
-    display: grid;
-    place-items: center;
+        const delay =
+            1500 +
+            Math.random() * 3000;
 
-    border-radius: 50%;
+        addTimer(
+            setTimeout(() => {
 
-    background: #22222d;
+                started = true;
 
-    color: #777783;
+                startTime = Date.now();
 
-    font-size: 13px;
-    font-weight: 800;
+                box.className =
+                    "reaction-box ready";
 
-    transition: .15s;
-}
+                box.textContent =
+                    "TAP NOW!";
 
-.reaction-target.ready {
-    background: #55e69d;
+            }, delay)
+        );
 
-    color: #06120c;
-
-    box-shadow: 0 0 60px rgba(82,230,155,.4);
-}
-
-
-/* DODGE */
-
-#dodgeCanvas,
-#spaceCanvas {
-    width: 100%;
-
-    display: block;
-
-    margin-top: 20px;
-
-    border-radius: 15px;
-
-    background: #08080d;
-
-    border: 1px solid var(--border);
-}
-
-.game-controls {
-    display: flex;
-    justify-content: space-between;
-
-    margin-top: 12px;
-
-    color: #6d6d78;
-
-    font-size: 10px;
-}
-
-.game-score {
-    color: white;
-
-    font-family: "Space Grotesk";
-
-    font-size: 20px;
-}
-
-
-/* FOOTER */
-
-footer {
-    padding: 70px 20px 40px;
-
-    text-align: center;
-
-    border-top: 1px solid var(--border);
-}
-
-.footer-logo {
-    font-size: 28px;
-}
-
-footer p {
-    margin-top: 8px;
-
-    color: #5c5c67;
-
-    font-size: 11px;
-}
-
-footer small {
-    display: block;
-
-    margin-top: 18px;
-
-    color: #3e3e48;
-
-    font-size: 8px;
-    font-weight: 800;
-
-    letter-spacing: 2px;
-}
-
-
-/* RESPONSIVE */
-
-@media(max-width: 850px) {
-
-    .games-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .section-heading {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .nav-links {
-        display: none;
-    }
-
-    .hero h1 {
-        letter-spacing: -4px;
     }
 
 }
 
-@media(max-width: 500px) {
 
-    nav {
-        padding: 0 15px;
+/* =========================================
+   CLICK RUSH
+========================================= */
+
+function startClickRush() {
+
+    clearAllGameTimers();
+
+    let score = 0;
+    let time = 10;
+    let playing = false;
+
+    gameStats.innerHTML = `
+        <span>TIME <strong id="clickTime">10</strong></span>
+        <span>BEST <strong>${getBest("clickrush")}</strong></span>
+    `;
+
+    gameContent.innerHTML = `
+
+        <div class="click-score" id="clickScore">
+            0
+        </div>
+
+        <div class="click-timer">
+            10 seconds
+        </div>
+
+        <button class="big-click" id="bigClick">
+            START
+        </button>
+
+        <button class="game-action" id="clickRestart">
+            Reset
+        </button>
+    `;
+
+    const button =
+        document.getElementById("bigClick");
+
+    const scoreElement =
+        document.getElementById("clickScore");
+
+    const timeElement =
+        document.getElementById("clickTime");
+
+    button.addEventListener(
+        "click",
+        function() {
+
+            if (!playing) {
+
+                playing = true;
+                score = 1;
+
+                button.textContent =
+                    "CLICK!";
+
+                scoreElement.textContent =
+                    score;
+
+                startTimer();
+
+                return;
+            }
+
+            score++;
+
+            scoreElement.textContent =
+                score;
+
+        }
+    );
+
+    document.getElementById(
+        "clickRestart"
+    ).addEventListener(
+        "click",
+        startClickRush
+    );
+
+    function startTimer() {
+
+        addTimer(
+            setInterval(() => {
+
+                time--;
+
+                timeElement.textContent =
+                    time;
+
+                if (time <= 0) {
+
+                    playing = false;
+
+                    saveScore(
+                        "clickrush",
+                        score
+                    );
+
+                    button.textContent =
+                        "PLAY AGAIN";
+
+                }
+
+            }, 1000)
+        );
+
     }
 
-    .hero {
-        min-height: 600px;
-        padding-top: 70px;
-    }
-
-    .hero h1 {
-        font-size: 54px;
-    }
-
-    .hero-buttons {
-        flex-direction: column;
-        width: 100%;
-        max-width: 280px;
-    }
-
-    .stats {
-        gap: 30px;
-    }
-
-    section {
-        padding: 60px 15px;
-    }
-
-    .game-card {
-        min-height: 370px;
-    }
-
-    .leaderboard-header,
-    .score-row {
-        grid-template-columns: 40px 1fr 90px;
-        padding: 14px;
-    }
-
-    .modal-box,
-    .game-window {
-        padding: 25px 18px;
-    }
 }
+
+
+/* =========================================
+   MEMORY
+========================================= */
+
+function startMemory() {
+
+    clearAllGameTimers();
+
+    const symbols = [
+        "🍎","🍎",
+        "🚀","🚀",
+        "🎮","🎮",
+        "🔥","🔥",
+        "⚡","⚡",
+        "👑","👑",
+        "💎","💎",
+        "🐉","🐉"
+    ];
+
+    symbols.sort(
+        () => Math.random() - .5
+    );
+
+    let first = null;
+    let second = null;
+
+    let lock = false;
+
+    let matches = 0;
+
+    let moves = 0;
+
+    gameStats.innerHTML = `
+        <span>MATCHES <strong id="memoryMatches">0/8</strong></span>
+        <span>MOVES <strong id="memoryMoves">0</strong></span>
+    `;
+
+    gameContent.innerHTML = `
+
+        <div
+            class="memory-board"
+            id="memoryBoard"
+        ></div>
+
+        <button
+            class="game-action"
+            id="memoryRestart"
+        >
+            New Game
+        </button>
+    `;
+
+    const board =
+        document.getElementById("memoryBoard");
+
+    function render() {
+
+        board.innerHTML = symbols.map(
+            (symbol, index) => `
+                <button
+                    class="memory-card-game"
+                    data-index="${index}"
+                >
+                    ${symbol}
+                </button>
+            `
+        ).join("");
+
+        board
+            .querySelectorAll(".memory-card-game")
+            .forEach(card => {
+
+                card.addEventListener(
+                    "click",
+                    () => flipCard(
+                        Number(card.dataset.index)
+                    )
+                );
+
+            });
+
+    }
+
+    function flipCard(index) {
+
+        if (
+            lock ||
+            index === first ||
+            board.children[index].classList.contains("matched")
+        )
+            return;
+
+        board.children[index]
+            .classList.add("flipped");
+
+        if (first === null) {
+
+            first = index;
+
+            return;
+        }
+
+        second = index;
+
+        moves++;
+
+        document.getElementById(
+            "memoryMoves"
+        ).textContent = moves;
+
+        lock = true;
+
+        if (
+            symbols[first] ===
+            symbols[second]
+        ) {
+
+            board.children[first]
+                .classList.add("matched");
+
+            board.children[second]
+                .classList.add("matched");
+
+            matches++;
+
+            document.getElementById(
+                "memoryMatches"
+            ).textContent =
+                `${matches}/8`;
+
+            resetTurn();
+
+            if (matches === 8) {
+
+                saveScore(
+                    "memory",
+                    Math.max(
+                        1,
+                        100 - moves
+                    )
+                );
+
+                showGameMessage(
+                    "MEMORY MASTER 🧠",
+                    `Finished in ${moves} moves.`,
+                    "Play Again",
+                    startMemory
+                );
+
+            }
+
+        } else {
+
+            addTimer(
+                setTimeout(() => {
+
+                    board.children[first]
+                        .classList.remove("flipped");
+
+                    board.children[second]
+                        .classList.remove("flipped");
+
+                    resetTurn();
+
+                }, 700)
+            );
+
+        }
+
+    }
+
+    function resetTurn() {
+
+        first = null;
+        second = null;
+        lock = false;
+
+    }
+
+    document.getElementById(
+        "memoryRestart"
+    ).addEventListener(
+        "click",
+        startMemory
+    );
+
+    render();
+
+}
+
+
+/* =========================================
+   GAME MESSAGE
+========================================= */
+
+function showGameMessage(
+    title,
+    text,
+    buttonText,
+    callback
+) {
+
+    gameContent.innerHTML = `
+
+        <div style="
+            text-align:center;
+            padding:50px 10px;
+        ">
+
+            <div style="
+                font-size:48px;
+                margin-bottom:15px;
+            ">
+                🏆
+            </div>
+
+            <h2 style="
+                font-family:'Space Grotesk';
+                font-size:32px;
+            ">
+                ${title}
+            </h2>
+
+            <p style="
+                color:#777783;
+                margin-top:8px;
+                font-size:13px;
+            ">
+                ${text}
+            </p>
+
+            <button
+                class="game-action"
+                id="messageButton"
+            >
+                ${buttonText}
+            </button>
+
+        </div>
+    `;
+
+    document.getElementById(
+        "messageButton"
+    ).addEventListener(
+        "click",
+        callback
+    );
+
+}
+
+
+/* =========================================
+   BEST SCORE
+========================================= */
+
+function getBest(game) {
+
+    const scores =
+        getScores(game);
+
+    if (!scores.length)
+        return 0;
+
+    return scores[0].score;
+
+}
+
+
+/* =========================================
+   GLOBAL KEYBOARD CLEANUP
+========================================= */
+
+document.addEventListener(
+    "keydown",
+    function(e) {
+
+        if (
+            e.key === "Escape" &&
+            !modal.classList.contains("hidden")
+        ) {
+
+            closeGameWindow();
+
+        }
+
+    }
+);
